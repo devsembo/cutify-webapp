@@ -2,15 +2,18 @@ import React from "react"
 import Header from "./_components/header"
 import { Input } from "./_components/ui/input"
 import { Button } from "./_components/ui/button"
-import { SearchIcon } from "lucide-react"
+import { Flower, Footprints, PocketKnife, SearchIcon } from "lucide-react"
 import Image from "next/image"
 import banner from "../../public/assets/banner.png"
 import { Card, CardContent } from "./_components/ui/card"
 import { Badge } from "./_components/ui/badge"
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar"
-import OtherBarber from "../../public/assets/barber.jpg"
+import cabelo from "../../public/assets/icons/cabelo.svg"
+import barba from "../../public/assets/icons/barba.svg"
+import acabamento from "../../public/assets/icons/acabamento.svg"
 import { setupAPIClient } from "@/services/api"
 import BarberShopItems from "./_components/barbershop-itmes"
+import Footer from "./_components/footer"
 
 type BarbershopProps = {
   id: string
@@ -49,6 +52,33 @@ export default async function Home() {
           </Button>
         </div>
 
+        {/* BUSCA RAPIDA */}
+        <div className="no-scrollbar mt-6 flex gap-3 overflow-x-scroll">
+          <Button className="gap-3 border bg-gray-950">
+            <Image src={cabelo} alt="Tesoura" width={16} height={16} />
+            <p className="text-white">Cabelo</p>
+          </Button>
+          <Button className="gap-3 border bg-gray-950">
+            <Image src={barba} alt="barba" width={16} height={16} />
+            <p className="text-white">Barba</p>
+          </Button>
+          <Button className="gap-3 border bg-gray-950">
+            <Image src={acabamento} alt="lamina" width={16} height={16} />
+            <p className="text-white">Acabamento</p>
+          </Button>
+          <Button className="gap-3 border bg-gray-950">
+            <Footprints size={16} color="white" />
+            <p className="text-white">Pedicure</p>
+          </Button>
+          <Button className="gap-3 border bg-gray-950">
+            <Flower size={16} color="white" />
+            <p className="text-white">Tranças</p>
+          </Button>
+          <Button className="gap-3 border bg-gray-950">
+            <PocketKnife size={16} color="white" />
+            <p className="text-white">Depilação</p>
+          </Button>
+        </div>
         {/* Imagem */}
         <div className="relative mt-6 h-[150px] w-full">
           <Image
@@ -97,7 +127,7 @@ export default async function Home() {
         <h4 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
           RECOMENDADOS
         </h4>
-        <div className="[&:: -webkit-scrollbar]:hidden flex h-80 gap-4 overflow-auto">
+        <div className="no-scrollbar flex h-80 gap-4 overflow-auto">
           <BarberShopItems barbershops={barbershops} />
         </div>
 
@@ -105,29 +135,14 @@ export default async function Home() {
         <h4 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
           POPULARES
         </h4>
-        <div className="flex w-full flex-row gap-8 overflow-scroll pb-4">
-          <Card className="h-72 w-48 bg-gray-950">
-            <CardContent className="flex w-48 flex-col justify-center gap-1 p-0">
-              <Image
-                src={OtherBarber}
-                alt="Classic BarberShop "
-                width={500}
-                height={300}
-                className="h-40 rounded-2xl object-cover p-2"
-              />
-              <p className="ml-1 text-sm font-semibold text-white">
-                El Peloquero
-              </p>
-              <p className="p-1 text-xs text-gray-500">
-                Rua de Fernandes Tomás 121, Porto.
-              </p>
-              <Button className="mx-4 flex h-8 w-40 items-center justify-center bg-gray-800 text-sm text-white">
-                Reservar
-              </Button>
-            </CardContent>
-          </Card>
+        <div className="no-scrollbar flex h-80 gap-4 overflow-auto">
+          <BarberShopItems barbershops={barbershops} />
         </div>
       </div>
+
+      <footer>
+        <Footer />
+      </footer>
     </>
   )
 }

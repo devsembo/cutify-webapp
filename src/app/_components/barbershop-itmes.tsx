@@ -38,7 +38,7 @@ function BarberShopItems({ barbershops }: BarberShopItemsProps) {
               />
 
               <Badge
-                className="absolute left-2 top-2 z-50 space-x-1 bg-gray-400 opacity-70"
+                className="absolute left-2 top-2 z-50 space-x-1 bg-gray-800 opacity-70"
                 variant={"secondary"}
               >
                 <StarIcon size={16} className="fill-yellow-500 text-primary" />
