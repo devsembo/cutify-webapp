@@ -5,11 +5,27 @@
   ],
   "rules": {
     "@typescript-eslint/no-require-imports": "off",
-    "no-unused-vars": "error"
+    "@typescript-eslint/no-unused-vars": [
+      "off",
+      {
+        "args": "all",
+        "argsIgnorePattern": "^_",
+        "caughtErrors": "all",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ],
+    "no-unused-vars": "off",
+    "no-unused-labels": "off"
   },
   "overrides": [
     {
-      "files":["*.ts", "*tsx"],
+      "files": [
+        "*.ts",
+        "*tsx"
+      ],
       "parser": "@typescript-eslint/parser"
     }
   ]
