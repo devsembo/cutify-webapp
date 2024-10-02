@@ -2,18 +2,14 @@ import React from "react"
 import Header from "./_components/header"
 import { Input } from "./_components/ui/input"
 import { Button } from "./_components/ui/button"
-import { Flower, Footprints, PocketKnife, SearchIcon } from "lucide-react"
+import { SearchIcon } from "lucide-react"
 import Image from "next/image"
 import banner from "../../public/assets/banner.png"
-import { Card, CardContent } from "./_components/ui/card"
-import { Badge } from "./_components/ui/badge"
-import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar"
-import cabelo from "../../public/assets/icons/cabelo.svg"
-import barba from "../../public/assets/icons/barba.svg"
-import acabamento from "../../public/assets/icons/acabamento.svg"
 import { setupAPIClient } from "@/services/api"
 import BarberShopItems from "./_components/barbershop-itmes"
 import Footer from "./_components/footer"
+import quickOption from "./_constants/search"
+import BookingItem from "./_components/bookingItem"
 
 type BarbershopProps = {
   id: string
@@ -54,31 +50,19 @@ export default async function Home() {
 
         {/* BUSCA RAPIDA */}
         <div className="no-scrollbar mt-6 flex gap-3 overflow-x-scroll">
-          <Button className="gap-3 border bg-gray-950">
-            <Image src={cabelo} alt="Tesoura" width={16} height={16} />
-            <p className="text-white">Cabelo</p>
-          </Button>
-          <Button className="gap-3 border bg-gray-950">
-            <Image src={barba} alt="barba" width={16} height={16} />
-            <p className="text-white">Barba</p>
-          </Button>
-          <Button className="gap-3 border bg-gray-950">
-            <Image src={acabamento} alt="lamina" width={16} height={16} />
-            <p className="text-white">Acabamento</p>
-          </Button>
-          <Button className="gap-3 border bg-gray-950">
-            <Footprints size={16} color="white" />
-            <p className="text-white">Pedicure</p>
-          </Button>
-          <Button className="gap-3 border bg-gray-950">
-            <Flower size={16} color="white" />
-            <p className="text-white">Tranças</p>
-          </Button>
-          <Button className="gap-3 border bg-gray-950">
-            <PocketKnife size={16} color="white" />
-            <p className="text-white">Depilação</p>
-          </Button>
+          {quickOption.map((option) => (
+            <Button className="gap-3 border bg-gray-950" key={option.title}>
+              <Image
+                src={option.imageurl}
+                alt={option.title}
+                width={16}
+                height={16}
+              />
+              <p className="text-white">{option.title}</p>
+            </Button>
+          ))}
         </div>
+
         {/* Imagem */}
         <div className="relative mt-6 h-[150px] w-full">
           <Image
@@ -90,38 +74,7 @@ export default async function Home() {
         </div>
 
         {/* AGENDAMENTO */}
-        <h4 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
-          Proxima marcação
-        </h4>
-        <div className="w-full">
-          <Card className="mt-3 bg-gray-950">
-            <CardContent className="flex justify-between p-0">
-              <div className="flex flex-col gap-2 py-5 pl-5">
-                <Badge className="h-6 w-fit bg-green-100 text-green-600">
-                  Confirmado
-                </Badge>
-                <h3 className="font-semibold">Corte de cabelo</h3>
-
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8 overflow-hidden rounded-full">
-                    <AvatarImage
-                      src="http://localhost:3333/image/e7139d5ad3-Captura de ecrÃ£ 2024-09-29 203401.png"
-                      alt="Mike Pina Barbeiro da Classic BarberShop"
-                    />
-                    <AvatarFallback>CB</AvatarFallback>
-                  </Avatar>
-                  <p className="text-sm">Classic BarberShop</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center justify-center border-l-2 border-solid px-5">
-                <p className="text-sm">Outubro</p>
-                <p className="text-2xl">05</p>
-                <p className="text-sm">18:45</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <BookingItem />
 
         {/* Reconmendados */}
         <h4 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
