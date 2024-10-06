@@ -2,7 +2,17 @@
 import React from "react"
 import { Button } from "./ui/button"
 import Image from "next/image"
-import { Calendar, HomeIcon, LogOut, MenuIcon } from "lucide-react"
+import {
+  Apple,
+  AppleIcon,
+  Calendar,
+  HomeIcon,
+  LogInIcon,
+  LogOut,
+  MenuIcon,
+} from "lucide-react"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
 import {
   Sheet,
   SheetContent,
@@ -14,6 +24,15 @@ import {
 import quickOption from "../_constants/search"
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar"
 import Link from "next/link"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogDescription,
+  DialogFooter,
+} from "./ui/dialog"
 
 function SideBarSheet() {
   return (
@@ -23,7 +42,15 @@ function SideBarSheet() {
           <SheetTitle className="text-left">Menu</SheetTitle>
         </SheetHeader>
 
-        <div className="bordr-b flex items-center gap-3 border-solid py-5">
+        <div className="bordr-b flex items-center justify-between gap-3 border-b border-solid py-5">
+          <h2 className="font-bold">Olá, faça o seu login!</h2>
+          <Button size={"icon"} className="h-8 w-8" variant={"outline"} asChild>
+            <Link href={"/login"}>
+              <LogInIcon size={16} />
+            </Link>
+          </Button>
+
+          {/*
           <Avatar>
             <AvatarImage
               src="/assets/avatar.jpg"
@@ -39,6 +66,7 @@ function SideBarSheet() {
             <p className="font-bold">Anderson Pedro</p>
             <p className="text-xs">anderson@devsembo.pt </p>
           </div>
+            */}
         </div>
 
         <div className="flex flex-col gap-4 border-b border-solid p-5">

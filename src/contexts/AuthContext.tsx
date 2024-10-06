@@ -2,6 +2,11 @@ import { createContext, ReactNode, useState, useEffect } from "react"
 import { destroyCookie, setCookie, parseCookies } from "nookies"
 import Router from "next/router"
 import { api } from "../services/apiClient"
+import {
+  signIn as nextAuthSignIn,
+  signOut as nextAuthSignOut,
+  useSession,
+} from "next-auth/react"
 
 type AuthContextData = {
   user: UserProps | undefined
@@ -10,12 +15,10 @@ type AuthContextData = {
   signOut: () => void
   signUp: (Credential: SignUpProps) => Promise<void>
 }
-
 type UserProps = {
   id: string
   nome: string
   emailNumber: string
-  nivel: number
 }
 
 type SignInProps = {
@@ -26,64 +29,71 @@ type SignInProps = {
 type SignUpProps = {
   nome: string
   email: string
-  num_inscric: string
   telemovel: string
-  password: string
+  senha: string
 }
 
 type AuthProviderProps = {
   children: ReactNode
 }
-
 export const AuthContext = createContext({} as AuthContextData)
 
 export function signOut() {
   try {
-    destroyCookie(undefined, "@consuauth.token")
+    destroyCookie(undefined, "@cutifywebtoken.token")
+    nextAuthSignOut()
     Router.push("/")
   } catch (error) {
     console.log("Erro ao deslogar", error)
   }
 }
 
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string
+      name?: string | null
+      email?: string | null
+      image?: string | null
+    }
+  }
+}
+
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<UserProps>()
-  const isAuthenticated = !!user
+  const { data: session } = useSession()
+  const isAuthenticated = !!user || !!session
 
   useEffect(() => {
-    const { "@cutifywebtoken.token": token } = parseCookies()
+    if (session?.user) {
+      setUser({
+        id: session.user.id ?? "",
+        nome: session.user.name ?? "",
+        emailNumber: session.user.email ?? "",
+      })
+    } else {
+      const { "@cutifywebtoken.token": token } = parseCookies()
 
-    if (token) {
-      api
-        .get("/me")
-        .then((response) => {
-          const { id, nome, emailNumber, nivel } = response.data
-
-          setUser({ id, nome, emailNumber, nivel })
-        })
-        .catch(() => {
-          signOut()
-        })
+      if (token) {
+        api
+          .get("/me")
+          .then((response) => {
+            const { id, nome, emailNumber } = response.data
+            setUser({ id, nome, emailNumber })
+          })
+          .catch(() => {
+            signOut()
+          })
+      }
     }
-  }, [])
+  }, [session])
 
-  async function signUp({
-    nome,
-    email,
-    num_inscric,
-    password,
-    telemovel,
-  }: SignUpProps) {
-    alert(
-      `nome:  ${nome} email: ${email}  nº consular:  ${num_inscric}  senha: ${password} phone: ${telemovel}`,
-    )
-
+  async function signUp({ nome, email, senha, telemovel }: SignUpProps) {
     try {
       const response = await api.post("/users", {
         nome,
         email,
-        num_inscric,
-        password,
+        senha,
         telemovel,
       })
 
@@ -95,26 +105,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn({ emailNumber, password }: SignInProps) {
     try {
-      const response = await api.post("/session", {
-        emailNumber,
-        password,
+      const result = await nextAuthSignIn("credentials", {
+        emailNumber: emailNumber,
+        senha: password,
+        redirect: false,
       })
 
-      const { id, nome, nivel, token } = response.data
+      if (result?.error) {
+        throw new Error(result.error)
+      }
 
-      setCookie(undefined, "@consuauth.token", token, {
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-        path: "/",
-      })
-
-      setUser({
-        id,
-        nome,
-        emailNumber,
-        nivel,
-      })
-
-      api.defaults.headers["Authorization"] = `Bearer ${token}`
+      const { "@cutifywebtoken.token": token } = parseCookies()
+      if (token) {
+        api.defaults.headers["Authorization"] = `Bearer ${token}`
+      }
 
       Router.push("/")
     } catch (error) {

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import Footer from "./_components/footer"
 import { Toaster } from "sonner"
+import { Providers } from "./Providers"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -17,11 +18,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt" className="dark flex h-screen flex-col p-3">
+    <html lang="pt" className="dark flex flex-col p-3">
       <body className={inter.className}>
-        {children}
-        <Toaster />
-        <Footer />
+        <Providers>
+          {children}
+          <Toaster />
+          <Footer />
+        </Providers>
       </body>
     </html>
   )

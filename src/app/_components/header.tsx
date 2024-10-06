@@ -13,8 +13,8 @@ const Header = () => {
         <Image
           src={logo}
           alt="CUTIFY logo em letras brancas"
-          height={120}
-          width={120}
+          height={100}
+          width={100}
         />
         <Sheet>
           <SheetTrigger asChild>
