@@ -24,7 +24,6 @@ async function getData(): Promise<BarbershopProps[]> {
   const apiClient = setupAPIClient()
   const response = await apiClient.get("/barbershops")
 
-  console.log(response)
   return response.data
 }
 
@@ -92,10 +91,6 @@ export default async function Home() {
           <BarberShopItems barbershops={barbershops} />
         </div>
       </div>
-
-      <footer>
-        <Footer />
-      </footer>
     </>
   )
 }

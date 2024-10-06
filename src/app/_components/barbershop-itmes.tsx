@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
 import { StarIcon } from "lucide-react"
+import Link from "next/link"
 
 type BarbershopProps = {
   id: string
@@ -30,7 +31,7 @@ function BarberShopItems({ barbershops }: BarberShopItemsProps) {
           <CardContent className="p-0">
             <div className="relative h-[159px]">
               <Image
-                src={`http://192.168.1.254:3333/image/${barbershop.fotoCapa}`}
+                src={`http://localhost:3333/image/${barbershop.fotoCapa}`}
                 alt={barbershop.fotoCapa}
                 width={500}
                 height={300}
@@ -54,8 +55,11 @@ function BarberShopItems({ barbershops }: BarberShopItemsProps) {
               <p className="mb-2 truncate p-1 text-xs text-gray-500">
                 {barbershop.endereco}
               </p>
-              <Button className="mx-4 flex h-8 w-40 items-center justify-center bg-gray-800 text-sm text-white">
-                Reservar
+              <Button
+                className="mx-4 flex h-8 w-40 items-center justify-center bg-gray-800 text-sm text-white"
+                asChild
+              >
+                <Link href={`/barbershops/${barbershop.id}`}>Reservar</Link>
               </Button>
             </div>
           </CardContent>

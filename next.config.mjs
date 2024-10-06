@@ -6,7 +6,7 @@ const nextConfig = {
                 //protocol: 'https',
                 protocol: 'http',
                 //hostname: 'mirex-api.onrender.com',
-                hostname: '192.168.1.254',
+                hostname: 'localhost',
                 pathname: '/image/**',
             },
         ],

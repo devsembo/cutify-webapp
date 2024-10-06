@@ -6,7 +6,7 @@ function Footer() {
   return (
     <>
       <Card>
-        <CardContent className="px-5 py-6">
+        <CardContent className="flex flex-row justify-center px-5 py-6">
           <p className="text-sm text-gray-400">
             © 2024 Copyright{" "}
             <Link
