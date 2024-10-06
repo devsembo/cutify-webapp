@@ -5,8 +5,10 @@ import Image from "next/image"
 import { Button } from "@/app/_components/ui/button"
 import {
   ChevronLeftIcon,
+  Copy,
   MapPinIcon,
   MenuIcon,
+  SmartphoneIcon,
   StarIcon,
   TriangleAlert,
 } from "lucide-react"
@@ -24,6 +26,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/app/_components/ui/alert-dialog"
+
+import { toast } from "sonner"
 
 interface Barbearia {
   id: string
@@ -121,6 +125,37 @@ export default function BarberShopPage({ params }: { params: Params }) {
     }
   }
 
+  function handleCopyPhone(phone: string) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(phone)
+    } else {
+      fallbackCopyTextToClipboard(phone)
+    }
+  }
+
+  function fallbackCopyTextToClipboard(text: string) {
+    const textArea = document.createElement("textarea")
+    textArea.value = text
+
+    textArea.style.top = "0"
+    textArea.style.left = "0"
+    textArea.style.position = "fixed"
+
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+
+    try {
+      const successful = document.execCommand("copy")
+      const msg = successful ? "bem-sucedido" : "malsucedido"
+      toast.success("copiado para area de transferência")
+    } catch (err) {
+      toast.error("ops! algo correu mal.")
+    }
+
+    document.body.removeChild(textArea)
+  }
+
   if (isLoading) return <div>Carregando...</div>
   if (error) return <div>{error}</div>
   if (!barberiaData) return <div>Nenhum dado encontrado</div>
@@ -130,6 +165,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
 
   return (
     <>
+      {/* Foto de Capa */}
       <div className="relative h-[200px] w-full">
         <Image
           src={`http://localhost:3333/image/${barbearia.fotoCapa}`}
@@ -157,6 +193,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
         </Button>
       </div>
 
+      {/* Titulo (nome e endereço da barbearia) */}
       <div className="border-b border-solid p-5">
         <h1 className="mb-4 text-xl font-bold">{barbearia.nome}</h1>
         <div className="mb-2 flex items-center gap-2">
@@ -174,6 +211,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
         </div>
       </div>
 
+      {/* descrição da barbearia */}
       <div className="space-y-2 border-b border-solid p-2">
         <h2 className="text-sm font-bold uppercase text-gray-400">Sobre nós</h2>
         <p className="text-justify text-xs text-gray-400">
@@ -181,6 +219,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
         </p>
       </div>
 
+      {/* Serviços Seccion */}
       <div className="space-y-2 border-b border-solid p-2">
         <h2 className="text-sm font-bold uppercase text-gray-400">Serviços</h2>
         {servicos.map((servico) => (
@@ -193,9 +232,26 @@ export default function BarberShopPage({ params }: { params: Params }) {
         ))}
       </div>
 
+      {/* Botão de agendar */}
       <div className="flex justify-center p-4">
         <Button onClick={handleAgendarClick} className="w-full max-w-md">
           Agendar
+        </Button>
+      </div>
+
+      {/* Contactos */}
+      <div className="flex justify-between p-5">
+        <div className="flex items-center gap-2">
+          <SmartphoneIcon />
+          <p>{barbearia.telefone}</p>
+        </div>
+        <Button
+          variant={"outline"}
+          className="gap-1 text-xs"
+          onClick={() => handleCopyPhone(barbearia.telefone)}
+        >
+          <Copy size={16} />
+          Copiar
         </Button>
       </div>
 

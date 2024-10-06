@@ -1,12 +1,47 @@
 "use client"
-import { useRouter, useSearchParams } from "next/navigation"
-import React, { useEffect, useState } from "react"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
+import React, { useEffect, useRef, useState } from "react"
 import { setupAPIClient } from "@/services/api"
+import Image from "next/image"
 import { Button } from "@/app/_components/ui/button"
+import Link from "next/link"
+import {
+  ChevronLeftIcon,
+  MapPinIcon,
+  MenuIcon,
+  StarIcon,
+  TriangleAlert,
+} from "lucide-react"
+
+import BarberItem from "@/app/_components/barberItem"
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/app/_components/ui/alert-dialog"
 
 interface Barbeiro {
   id: string
   nome: string
+  totalAvaliacoes: number
+  fotoPerfil: string
+  mediaEstrelas: number
+}
+
+interface Barbearia {
+  id: string
+  nome: string
+  endereco: string
+  telefone: string
+  fotoCapa: string
+  mediaEstrelas: number
+  totalAvaliacoes: number
 }
 
 interface Agendamento {
@@ -27,11 +62,12 @@ export default function AgendamentoPage() {
     hora: null,
   })
   const [barbeiros, setBarbeiros] = useState<Barbeiro[]>([])
-  const [datasDisponiveis, setDatasDisponiveis] = useState<string[]>([])
-  const [horasDisponiveis, setHorasDisponiveis] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
-
-  const barberiaId = searchParams.get("id")
+  const [barbearia, setBarbearia] = useState<Barbearia | null>(null)
+  const [selectedBarber, setSelectedBarber] = useState<string[]>([])
+  const params = useParams()
+  const barberiaId = params.id as string
+  const alertTriggerRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const step = parseInt(searchParams.get("step") || "1")
@@ -40,17 +76,40 @@ export default function AgendamentoPage() {
     const servicos = searchParams.get("servicos")?.split(",") || []
     setAgendamento((prev) => ({ ...prev, servicos }))
 
-    if (step === 1) {
+    if (barberiaId) {
+      fetchBarbearia()
       fetchBarbeiros()
     }
-  }, [searchParams])
+  }, [searchParams, barberiaId])
+
+  async function fetchBarbearia() {
+    if (!barberiaId) return
+
+    const apiClient = setupAPIClient()
+    try {
+      const response = await apiClient.get(`/barbershop/detail`, {
+        params: { BarberShop_ID: barberiaId },
+      })
+      setBarbearia(response.data)
+    } catch (error) {
+      console.error("Erro ao buscar dados da barbearia:", error)
+    }
+  }
+
+  const toggleBarber = (barberID: string) => {
+    setSelectedBarber((prev) =>
+      prev.includes(barberID)
+        ? prev.filter((id) => id !== barberID)
+        : [...prev, barberID],
+    )
+  }
 
   async function fetchBarbeiros() {
     if (!barberiaId) return
 
     const apiClient = setupAPIClient()
     try {
-      const response = await apiClient.get(`/barbeiros`, {
+      const response = await apiClient.get(`/barbers`, {
         params: { barbershop_id: barberiaId },
       })
       setBarbeiros(response.data)
@@ -61,115 +120,109 @@ export default function AgendamentoPage() {
     }
   }
 
-  async function fetchDatasDisponiveis() {
-    // Implemente a lógica para buscar datas disponíveis
-    // Este é um exemplo simplificado
-    setDatasDisponiveis(["2023-06-01", "2023-06-02", "2023-06-03"])
-  }
-
-  async function fetchHorasDisponiveis() {
-    // Implemente a lógica para buscar horas disponíveis
-    // Este é um exemplo simplificado
-    setHorasDisponiveis(["09:00", "10:00", "11:00", "14:00", "15:00"])
-  }
-
-  const handleBarbeiroSelect = (barbeiroId: string) => {
-    setAgendamento((prev) => ({ ...prev, barbeiroId }))
-    setStep(2)
-    fetchDatasDisponiveis()
-  }
-
-  const handleDataSelect = (data: string) => {
-    setAgendamento((prev) => ({ ...prev, data }))
-    setStep(3)
-    fetchHorasDisponiveis()
-  }
-
-  const handleHoraSelect = (hora: string) => {
-    setAgendamento((prev) => ({ ...prev, hora }))
-    setStep(4)
-  }
-
-  const handleConfirmar = async () => {
-    // Implemente a lógica para confirmar o agendamento
-    console.log("Agendamento confirmado:", agendamento)
-    // Faça uma chamada à API para salvar o agendamento
-    // Redirecione para uma página de confirmação
-    router.push("/agendamento-confirmado")
+  const handleAgendarClick = () => {
+    if (selectedBarber.length === 0) {
+      alertTriggerRef.current?.click()
+    } else {
+      router.push(
+        `/agendamento/${params.id}?step=1&servicos=${selectedBarber.join(",")}`,
+      )
+    }
   }
 
   if (isLoading) return <div>Carregando...</div>
 
   return (
-    <div className="p-4">
-      {step === 1 && (
-        <>
-          <h1 className="mb-4 text-2xl font-bold">Selecione um Barbeiro</h1>
-          <div className="space-y-2">
-            {barbeiros.map((barbeiro) => (
-              <div
-                key={barbeiro.id}
-                className={`cursor-pointer rounded border p-2 ${agendamento.barbeiroId === barbeiro.id ? "bg-blue-100" : ""}`}
-                onClick={() => handleBarbeiroSelect(barbeiro.id)}
-              >
-                {barbeiro.nome}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+    <>
+      {/* Foto de Capa */}
+      {barbearia && (
+        <div className="relative h-[200px] w-full">
+          <Image
+            src={`http://localhost:3333/image/${barbearia.fotoCapa}`}
+            alt={barbearia.nome}
+            fill
+            className="object-cover"
+          />
 
-      {step === 2 && (
-        <>
-          <h1 className="mb-4 text-2xl font-bold">Selecione uma Data</h1>
-          <div className="space-y-2">
-            {datasDisponiveis.map((data) => (
-              <div
-                key={data}
-                className={`cursor-pointer rounded border p-2 ${agendamento.data === data ? "bg-blue-100" : ""}`}
-                onClick={() => handleDataSelect(data)}
-              >
-                {data}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {step === 3 && (
-        <>
-          <h1 className="mb-4 text-2xl font-bold">Selecione um Horário</h1>
-          <div className="space-y-2">
-            {horasDisponiveis.map((hora) => (
-              <div
-                key={hora}
-                className={`cursor-pointer rounded border p-2 ${agendamento.hora === hora ? "bg-blue-100" : ""}`}
-                onClick={() => handleHoraSelect(hora)}
-              >
-                {hora}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {step === 4 && (
-        <>
-          <h1 className="mb-4 text-2xl font-bold">Confirmar Agendamento</h1>
-          <div className="space-y-2">
-            <p>Serviços: {agendamento.servicos.join(", ")}</p>
-            <p>
-              Barbeiro:{" "}
-              {barbeiros.find((b) => b.id === agendamento.barbeiroId)?.nome}
-            </p>
-            <p>Data: {agendamento.data}</p>
-            <p>Hora: {agendamento.hora}</p>
-          </div>
-          <Button onClick={handleConfirmar} className="mt-4 w-full">
-            Confirmar Agendamento
+          <Button
+            size={"icon"}
+            variant={"secondary"}
+            className="absolute left-4 top-4 opacity-85"
+            asChild
+            onClick={() => router.back()}
+          >
+            <ChevronLeftIcon />
           </Button>
-        </>
+          <Button
+            size={"icon"}
+            variant={"secondary"}
+            className="absolute right-4 top-4 opacity-85"
+          >
+            <MenuIcon />
+          </Button>
+        </div>
       )}
-    </div>
+
+      {/* Informações da Barbearia */}
+      {barbearia && (
+        <div className="border-b border-solid p-4">
+          <h1 className="mb-2 text-xl font-bold">{barbearia.nome}</h1>
+          <div className="mb-2 flex items-center gap-2">
+            <MapPinIcon className="text-blue-600" size={16} />
+            <p className="text-sm">{barbearia.endereco}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <StarIcon className="text-yellow-400" size={16} />
+            <p className="text-sm">
+              {barbearia.mediaEstrelas.toFixed(1)}
+              <span className="ml-2 text-gray-400">
+                ({barbearia.totalAvaliacoes.toLocaleString("pt-BR")} avaliações)
+              </span>
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="p-4">
+        {step === 1 && (
+          <>
+            <h1 className="mb-4 text-2xl font-bold">Selecione um Barbeiro</h1>
+            <div className="space-y-2">
+              {barbeiros.map((barbeiro) => (
+                <BarberItem
+                  key={barbeiro.id}
+                  barbeiro={barbeiro}
+                  isSelected={selectedBarber.includes(barbeiro.nome)}
+                  onToggle={() => toggleBarber(barbeiro.nome)}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+      {/* Botão de agendar */}
+      <div className="flex justify-center p-4">
+        <Button onClick={handleAgendarClick} className="w-full max-w-md">
+          Agendar
+        </Button>
+      </div>
+
+      <AlertDialog>
+        <AlertDialogTrigger ref={alertTriggerRef} className="hidden" />
+        <AlertDialogContent className="w-80 justify-items-center rounded text-yellow-400">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="justify-items-center">
+              <TriangleAlert color="yellow" size={32} className="ml-[120px]" />
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-white">
+              Você deve selecionar um barbeiro antes de agendar.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction className="w-36">Ok</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
