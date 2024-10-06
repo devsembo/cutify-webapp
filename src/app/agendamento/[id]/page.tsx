@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { setupAPIClient } from "@/services/api"
 import Image from "next/image"
 import { Button } from "@/app/_components/ui/button"
-import Link from "next/link"
+import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet"
 import {
   ChevronLeftIcon,
   MapPinIcon,
@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/app/_components/ui/alert-dialog"
+import SideBarSheet from "@/app/_components/sidebar-sheet"
 
 interface Barbeiro {
   id: string
@@ -153,13 +154,18 @@ export default function AgendamentoPage() {
           >
             <ChevronLeftIcon />
           </Button>
-          <Button
-            size={"icon"}
-            variant={"secondary"}
-            className="absolute right-4 top-4 opacity-85"
-          >
-            <MenuIcon />
-          </Button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                size="icon"
+                variant="outline"
+                className="absolute right-4 top-4 opacity-85"
+              >
+                <MenuIcon />
+              </Button>
+            </SheetTrigger>
+            <SideBarSheet />
+          </Sheet>
         </div>
       )}
 

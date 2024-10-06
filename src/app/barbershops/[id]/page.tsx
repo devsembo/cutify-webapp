@@ -15,7 +15,7 @@ import {
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import ServiceItem from "@/app/_components/serviceItem"
-
+import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +28,7 @@ import {
 } from "@/app/_components/ui/alert-dialog"
 
 import { toast } from "sonner"
+import SideBarSheet from "@/app/_components/sidebar-sheet"
 
 interface Barbearia {
   id: string
@@ -184,15 +185,19 @@ export default function BarberShopPage({ params }: { params: Params }) {
             <ChevronLeftIcon />
           </Link>
         </Button>
-        <Button
-          size={"icon"}
-          variant={"secondary"}
-          className="absolute right-4 top-4 opacity-85"
-        >
-          <MenuIcon />
-        </Button>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              variant="outline"
+              className="absolute right-4 top-4 opacity-85"
+            >
+              <MenuIcon />
+            </Button>
+          </SheetTrigger>
+          <SideBarSheet />
+        </Sheet>
       </div>
-
       {/* Titulo (nome e endereço da barbearia) */}
       <div className="border-b border-solid p-5">
         <h1 className="mb-4 text-xl font-bold">{barbearia.nome}</h1>

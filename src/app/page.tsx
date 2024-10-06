@@ -7,7 +7,7 @@ import Image from "next/image"
 import banner from "../../public/assets/banner.png"
 import { setupAPIClient } from "@/services/api"
 import BarberShopItems from "./_components/barbershop-itmes"
-import Footer from "./_components/footer"
+
 import quickOption from "./_constants/search"
 import BookingItem from "./_components/bookingItem"
 
