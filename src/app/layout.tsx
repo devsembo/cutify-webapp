@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import Footer from "./_components/footer"
 import { Toaster } from "sonner"
 import { Providers } from "./Providers"
+import ConditionalFooter from "./_components/conditionalFooter"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,7 +23,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <Toaster />
-          <Footer />
+          <ConditionalFooter />
         </Providers>
       </body>
     </html>

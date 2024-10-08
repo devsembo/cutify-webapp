@@ -58,10 +58,9 @@ declare module "next-auth" {
     }
   }
 }
-
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<UserProps>()
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const isAuthenticated = !!user || !!session
 
   useEffect(() => {
@@ -71,9 +70,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         nome: session.user.name ?? "",
         emailNumber: session.user.email ?? "",
       })
-    } else {
+    } else if (status === "unauthenticated") {
       const { "@cutifywebtoken.token": token } = parseCookies()
-
       if (token) {
         api
           .get("/me")
@@ -81,33 +79,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
             const { id, nome, emailNumber } = response.data
             setUser({ id, nome, emailNumber })
           })
-          .catch(() => {
-            signOut()
-          })
+          .catch(() => signOut())
       }
     }
-  }, [session])
-
-  async function signUp({ nome, email, senha, telemovel }: SignUpProps) {
-    try {
-      const response = await api.post("/users", {
-        nome,
-        email,
-        senha,
-        telemovel,
-      })
-
-      Router.push("/userAuth")
-    } catch (error) {
-      console.error("Preencha todos os campos", error)
-    }
-  }
+  }, [session, status])
 
   async function signIn({ emailNumber, password }: SignInProps) {
     try {
       const result = await nextAuthSignIn("credentials", {
-        emailNumber: emailNumber,
-        senha: password,
+        emailNumber,
+        password,
         redirect: false,
       })
 
@@ -123,6 +104,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
       Router.push("/")
     } catch (error) {
       console.error("Dados inválidos ", error)
+    }
+  }
+
+  async function signUp({ nome, email, senha, telemovel }: SignUpProps) {
+    try {
+      const response = await api.post("/users", {
+        nome,
+        email,
+        senha,
+        telemovel,
+      })
+
+      Router.push("/userAuth")
+    } catch (error) {
+      console.error("Preencha todos os campos", error)
     }
   }
 
