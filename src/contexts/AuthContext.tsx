@@ -15,10 +15,13 @@ type AuthContextData = {
   signOut: () => void
   signUp: (Credential: SignUpProps) => Promise<void>
 }
+
 type UserProps = {
   id: string
-  nome: string
-  emailNumber: string
+  nome?: string | null
+  email?: string | null
+  image?: string | null
+  telemovel?: string | null
 }
 
 type SignInProps = {
@@ -48,16 +51,6 @@ export function signOut() {
   }
 }
 
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id?: string
-      name?: string | null
-      email?: string | null
-      image?: string | null
-    }
-  }
-}
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<UserProps>()
   const { data: session, status } = useSession()
@@ -66,9 +59,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     if (session?.user) {
       setUser({
-        id: session.user.id ?? "",
+        id: session.user.id,
         nome: session.user.name ?? "",
-        emailNumber: session.user.email ?? "",
+        telemovel: session.user.telemovel ?? session.user.email ?? "",
+        image: session.user.image ?? null,
       })
     } else if (status === "unauthenticated") {
       const { "@cutifywebtoken.token": token } = parseCookies()
@@ -76,8 +70,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         api
           .get("/me")
           .then((response) => {
-            const { id, nome, emailNumber } = response.data
-            setUser({ id, nome, emailNumber })
+            const { id, nome, telemovel } = response.data
+            setUser({ id, nome, telemovel })
           })
           .catch(() => signOut())
       }
