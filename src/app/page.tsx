@@ -45,14 +45,20 @@ export default async function Home() {
         {/* BUSCA RAPIDA */}
         <div className="no-scrollbar mt-6 flex gap-3 overflow-x-scroll">
           {quickOption.map((option) => (
-            <Button className="gap-3 border bg-gray-950" key={option.title}>
-              <Image
-                src={option.imageurl}
-                alt={option.title}
-                width={16}
-                height={16}
-              />
-              <p className="text-white">{option.title}</p>
+            <Button
+              className="gap-3 border bg-gray-950"
+              key={option.title}
+              asChild
+            >
+              <Link href={`/barbershops?service=${option.title}`}>
+                <Image
+                  src={option.imageurl}
+                  alt={option.title}
+                  width={16}
+                  height={16}
+                />
+                <p className="text-white">{option.title}</p>
+              </Link>
             </Button>
           ))}
         </div>

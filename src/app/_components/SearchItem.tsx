@@ -36,9 +36,11 @@ function SearchItem() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    router.push(`/barbershops?search=${values.search}`)
+    const searchParams = new URLSearchParams({
+      title: values.search,
+    })
+    router.push(`/barbershops?${searchParams.toString()}`)
   }
-
   return (
     <>
       <div>
@@ -50,7 +52,10 @@ function SearchItem() {
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
-                    <Input placeholder="A sua pesquisa" {...field} />
+                    <Input
+                      placeholder="Barbearia ou salão favorito"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

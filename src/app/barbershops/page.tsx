@@ -4,12 +4,7 @@ import { setupAPIClient } from "@/services/api"
 import BarberShopItems from "../_components/barbershop-itmes"
 import Header from "../_components/header"
 import SearchItem from "../_components/SearchItem"
-
-interface BarberShopsPageProps {
-  searchParams: {
-    search?: string
-  }
-}
+import { useSearchParams } from "next/navigation"
 
 type BarbershopProps = {
   id: string
@@ -20,28 +15,38 @@ type BarbershopProps = {
   mediaEstrelas: number
 }
 
-export default function BarberShopsPage({
-  searchParams,
-}: BarberShopsPageProps) {
+export default function BarberShopsPage() {
   const [barberShops, setBarberShops] = useState<BarbershopProps[]>([])
-  const search = searchParams.search || ""
   const [isLoading, setIsLoading] = useState(false)
+  const searchParams = useSearchParams()
+  const title = searchParams.get("title")
+  const service = searchParams.get("service")
 
   useEffect(() => {
     async function fetchBarberShops() {
+      setIsLoading(true)
       try {
         const apiClient = setupAPIClient()
-        const response = await apiClient.get<BarbershopProps[]>("/babershop", {
-          params: { search },
+        const response = await apiClient.get<BarbershopProps[]>("/barbershop", {
+          params: {
+            title,
+            service,
+          },
         })
         setBarberShops(response.data)
       } catch (error) {
         console.error("Erro ao buscar barbearias:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
-    fetchBarberShops()
-  }, [search])
+    if (title || service) {
+      fetchBarberShops()
+    }
+  }, [title, service])
+
+  const searchTerm = title || service
 
   return (
     <>
@@ -51,10 +56,10 @@ export default function BarberShopsPage({
           <SearchItem />
         </div>
 
-        {search.length > 0 ? (
+        {searchTerm ? (
           <>
             <h3 className="p-3 font-bold text-gray-400">
-              Resultados para: {search}
+              Resultados para: {searchTerm}
             </h3>
             {isLoading ? (
               <p>Carregando resultados...</p>
@@ -64,8 +69,7 @@ export default function BarberShopsPage({
               </div>
             ) : (
               <p className="mt-28 p-5 text-gray-500">
-                Nenhuma resultado encontrado para &quot;{searchParams.search}
-                &quot;.
+                Nenhum resultado encontrado para &quot;{searchTerm}&quot;.
               </p>
             )}
           </>
