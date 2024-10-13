@@ -28,10 +28,10 @@ function BarberShopItems({ barbershops }: BarberShopItemsProps) {
           className="mt-3 h-72 w-48 max-w-full bg-gray-950"
           key={barbershop.id}
         >
-          <CardContent className="p-0">
+          <CardContent className="flex flex-col p-0">
             <div className="relative h-[159px]">
               <Image
-                src={`http://localhost:3333/image/${barbershop.fotoCapa}`}
+                src={`http://192.168.1.81:3333/image/${barbershop.fotoCapa}`}
                 alt={barbershop.fotoCapa}
                 width={500}
                 height={300}
@@ -55,12 +55,14 @@ function BarberShopItems({ barbershops }: BarberShopItemsProps) {
               <p className="mb-2 truncate p-1 text-xs text-gray-500">
                 {barbershop.endereco}
               </p>
-              <Button
-                className="mx-4 flex h-8 w-40 items-center justify-center bg-gray-800 text-sm text-white"
-                asChild
-              >
-                <Link href={`/barbershops/${barbershop.id}`}>Reservar</Link>
-              </Button>
+              <div className="flex w-full items-center justify-center">
+                <Button
+                  className="flex h-8 w-40 items-center justify-center bg-gray-800 text-sm text-white"
+                  asChild
+                >
+                  <Link href={`/barbershops/${barbershop.id}`}>Reservar</Link>
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

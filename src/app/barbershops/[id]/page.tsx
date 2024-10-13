@@ -129,6 +129,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
   function handleCopyPhone(phone: string) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(phone)
+      toast("Copiado para area de transfrência.")
     } else {
       fallbackCopyTextToClipboard(phone)
     }
@@ -169,7 +170,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
       {/* Foto de Capa */}
       <div className="relative h-[200px] w-full">
         <Image
-          src={`http://localhost:3333/image/${barbearia.fotoCapa}`}
+          src={`http://192.168.1.81:3333/image/${barbearia.fotoCapa}`}
           alt={barbearia.nome}
           fill
           className="object-cover"
@@ -248,7 +249,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
       <div className="flex justify-between p-5">
         <div className="flex items-center gap-2">
           <SmartphoneIcon />
-          <p>{barbearia.telefone}</p>
+          <p>(+351) {barbearia.telefone}</p>
         </div>
         <Button
           variant={"outline"}

@@ -3,10 +3,10 @@ const nextConfig = {
     images: {
         remotePatterns: [
             {
-                //protocol: 'https',
+                //protocol: 'http',
                 protocol: 'http',
                 //hostname: 'mirex-api.onrender.com',
-                hostname: 'localhost',
+                hostname: '192.168.1.81',
                 pathname: '/image/**',
             },
         ],

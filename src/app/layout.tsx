@@ -2,8 +2,9 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "sonner"
-import { Providers } from "./Providers"
+import { GoogleOAuthProvider } from "@react-oauth/google"
 import ConditionalFooter from "./_components/conditionalFooter"
+import { AuthProvider } from "@/contexts/AuthContext"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -20,11 +21,15 @@ export default function RootLayout({
   return (
     <html lang="pt" className="dark flex flex-col p-3">
       <body className={inter.className}>
-        <Providers>
-          {children}
+        <GoogleOAuthProvider clientId="581065928014-hlpvg61jfhmh98dps40h1060ctbdq7i6.apps.googleusercontent.com">
+          <AuthProvider>
+            <div className="flex h-full flex-col">
+              <div className="flex-1">{children}</div>
+              <ConditionalFooter />
+            </div>
+          </AuthProvider>
           <Toaster />
-          <ConditionalFooter />
-        </Providers>
+        </GoogleOAuthProvider>
       </body>
     </html>
   )

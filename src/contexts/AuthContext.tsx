@@ -1,27 +1,31 @@
-import { createContext, ReactNode, useState, useEffect } from "react"
-import { destroyCookie, setCookie, parseCookies } from "nookies"
-import Router from "next/router"
-import { api } from "../services/apiClient"
+"use client"
 import {
-  signIn as nextAuthSignIn,
-  signOut as nextAuthSignOut,
-  useSession,
-} from "next-auth/react"
+  createContext,
+  ReactNode,
+  useState,
+  useEffect,
+  useCallback,
+} from "react"
+import { destroyCookie, setCookie } from "nookies"
+import { useRouter } from "next/navigation"
+import { api } from "../services/apiClient"
+import { toast } from "sonner"
 
 type AuthContextData = {
-  user: UserProps | undefined
+  user: UserProps | null
   isAuthenticated: boolean
   signIn: (credentials: SignInProps) => Promise<void>
   signOut: () => void
   signUp: (Credential: SignUpProps) => Promise<void>
+  setUser: (user: UserProps) => void
 }
 
 type UserProps = {
   id: string
-  nome?: string | null
-  email?: string | null
-  image?: string | null
-  telemovel?: string | null
+  nome: string
+  email: string
+  telemovel: string
+  fotoPerfil: string
 }
 
 type SignInProps = {
@@ -32,93 +36,95 @@ type SignInProps = {
 type SignUpProps = {
   nome: string
   email: string
+  num_inscric: string
   telemovel: string
-  senha: string
+  password: string
 }
 
 type AuthProviderProps = {
   children: ReactNode
 }
-export const AuthContext = createContext({} as AuthContextData)
 
-export function signOut() {
-  try {
-    destroyCookie(undefined, "@cutifywebtoken.token")
-    nextAuthSignOut()
-    Router.push("/")
-  } catch (error) {
-    console.log("Erro ao deslogar", error)
-  }
-}
+export const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<UserProps>()
-  const { data: session, status } = useSession()
-  const isAuthenticated = !!user || !!session
+  const [user, setUser] = useState<UserProps | null>(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user")
+      return storedUser ? JSON.parse(storedUser) : null
+    }
+    return null
+  })
+
+  const router = useRouter()
+  const isAuthenticated = !!user
 
   useEffect(() => {
-    if (session?.user) {
-      setUser({
-        id: session.user.id,
-        nome: session.user.name ?? "",
-        telemovel: session.user.telemovel ?? session.user.email ?? "",
-        image: session.user.image ?? null,
-      })
-    } else if (status === "unauthenticated") {
-      const { "@cutifywebtoken.token": token } = parseCookies()
-      if (token) {
-        api
-          .get("/me")
-          .then((response) => {
-            const { id, nome, telemovel } = response.data
-            setUser({ id, nome, telemovel })
-          })
-          .catch(() => signOut())
-      }
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user))
+    } else {
+      localStorage.removeItem("user")
     }
-  }, [session, status])
+  }, [user])
 
-  async function signIn({ emailNumber, password }: SignInProps) {
+  const signOut = useCallback(() => {
     try {
-      const result = await nextAuthSignIn("credentials", {
-        emailNumber,
-        password,
-        redirect: false,
-      })
+      destroyCookie(undefined, "@cutifywebtoken.token")
+      setUser(null)
+      localStorage.removeItem("user")
+      router.push("/")
+    } catch (error) {
+      console.error("Erro ao deslogar", error)
+    }
+  }, [router])
 
-      if (result?.error) {
-        throw new Error(result.error)
+  const signUp = useCallback(
+    async ({ nome, email, num_inscric, password, telemovel }: SignUpProps) => {
+      try {
+        await api.post("/users", {
+          nome,
+          email,
+          num_inscric,
+          password,
+          telemovel,
+        })
+        toast.success("Registo concluído com sucesso.")
+        router.push("/userAuth")
+      } catch (error) {
+        toast.error(
+          "Dados inválidos, preencha devidamente os campos e tente novamente.",
+        )
+        console.error("Erro no registro:", error)
       }
+    },
+    [router],
+  )
 
-      const { "@cutifywebtoken.token": token } = parseCookies()
-      if (token) {
+  const signIn = useCallback(
+    async ({ emailNumber, password }: SignInProps) => {
+      try {
+        const response = await api.post("/session", { emailNumber, password })
+        const { id, nome, telemovel, email, token, fotoPerfil } = response.data
+
+        setCookie(undefined, "@cutifywebtoken.token", token, {
+          maxAge: 60 * 60 * 24 * 30, // 30 days
+          path: "/",
+        })
+
+        setUser({ id, nome, email, telemovel, fotoPerfil })
         api.defaults.headers["Authorization"] = `Bearer ${token}`
+        router.push("/")
+      } catch (error) {
+        toast.warning("Email ou senha inválidos!")
+        console.error("Erro ao acessar:", error)
       }
-
-      Router.push("/")
-    } catch (error) {
-      console.error("Dados inválidos ", error)
-    }
-  }
-
-  async function signUp({ nome, email, senha, telemovel }: SignUpProps) {
-    try {
-      const response = await api.post("/users", {
-        nome,
-        email,
-        senha,
-        telemovel,
-      })
-
-      Router.push("/userAuth")
-    } catch (error) {
-      console.error("Preencha todos os campos", error)
-    }
-  }
+    },
+    [router],
+  )
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, signIn, signOut, signUp }}
+      value={{ user, isAuthenticated, signIn, signOut, signUp, setUser }}
     >
       {children}
     </AuthContext.Provider>

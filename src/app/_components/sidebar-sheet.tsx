@@ -1,7 +1,9 @@
 "use client"
-import React from "react"
+import React, { useContext } from "react"
 import { Button } from "./ui/button"
+import { AuthContext } from "@/contexts/AuthContext"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import {
   Apple,
   AppleIcon,
@@ -35,6 +37,17 @@ import {
 } from "./ui/dialog"
 
 function SideBarSheet() {
+  const { isAuthenticated, user, signOut } = useContext(AuthContext)
+  const router = useRouter()
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      router.push("/") // Redireciona para a página inicial
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error)
+    }
+  }
   return (
     <>
       <SheetContent className="overflow-y-auto">
@@ -42,31 +55,34 @@ function SideBarSheet() {
           <SheetTitle className="text-left">Menu</SheetTitle>
         </SheetHeader>
 
-        <div className="bordr-b flex items-center justify-between gap-3 border-b border-solid py-5">
-          <h2 className="font-bold">Olá, faça o seu login!</h2>
-          <Button size={"icon"} className="h-8 w-8" variant={"outline"} asChild>
-            <Link href={"/login"}>
-              <LogInIcon size={16} />
-            </Link>
-          </Button>
-
-          {/*
-          <Avatar>
-            <AvatarImage
-              src="/assets/avatar.jpg"
-              alt="Foto de perfil do usuario"
-              width={26}
-              height={26}
-              className="rounded"
-            />
-            <AvatarFallback>CB</AvatarFallback>
-          </Avatar>
-
-          <div>
-            <p className="font-bold">Anderson Pedro</p>
-            <p className="text-xs">anderson@devsembo.pt </p>
-          </div>
-            */}
+        <div className="flex items-center justify-between gap-3 border-b border-solid py-5">
+          {isAuthenticated ? (
+            <div className="flex gap-5">
+              <Avatar>
+                <AvatarImage
+                  src={user?.fotoPerfil}
+                  alt="Foto de perfil do usuario"
+                  width={26}
+                  height={26}
+                  className="rounded"
+                />
+                <AvatarFallback>C </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-bold">{user?.nome || "Nome do Usuário"}</p>
+                <p className="text-xs">{user?.email || "email@exemplo.com"}</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <h2 className="font-bold">Olá, faça o seu login!</h2>
+              <Button size="icon" className="h-8 w-8" variant="outline" asChild>
+                <Link href="/login">
+                  <LogInIcon size={16} />
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
 
         <div className="flex flex-col gap-4 border-b border-solid p-5">
@@ -104,10 +120,23 @@ function SideBarSheet() {
         </div>
 
         <div className="flex flex-col gap-2 border-solid py-5">
-          <Button variant={"outline"} className="gap-3 text-red-600">
-            <LogOut size={18} color="red" />
-            Terminar sessão
-          </Button>
+          {isAuthenticated ? (
+            <Button
+              variant={"outline"}
+              className="gap-3 text-red-600"
+              onClick={handleSignOut}
+            >
+              <LogOut size={18} color="red" />
+              Terminar sessão
+            </Button>
+          ) : (
+            <div>
+              <p className="text-xs text-gray-400">
+                Os melhores, nos melhores.{" "}
+                <span className="text-red-700">CUTIFY</span>
+              </p>
+            </div>
+          )}
         </div>
       </SheetContent>
     </>

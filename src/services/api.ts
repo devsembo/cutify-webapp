@@ -8,7 +8,8 @@ export function setupAPIClient(
   const cookies = parseCookies(ctx)
 
   const api = axios.create({
-    baseURL: "http://localhost:3333",
+    //baseURL: "http://192.168.1.81:3333",
+    baseURL: "http://192.168.1.81:3333",
     headers: {
       Authorization: `Bearer ${cookies["@cutifywebtoken.token"]}`,
     },

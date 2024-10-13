@@ -1,15 +1,16 @@
 import React from "react"
 import Header from "./_components/header"
-import { Input } from "./_components/ui/input"
 import { Button } from "./_components/ui/button"
-import { SearchIcon } from "lucide-react"
 import Image from "next/image"
-import banner from "../../public/assets/banner.png"
 import { setupAPIClient } from "@/services/api"
 import BarberShopItems from "./_components/barbershop-itmes"
+import UserGreeting from "./_components/userGreeting"
 
 import quickOption from "./_constants/search"
 import BookingItem from "./_components/bookingItem"
+import CurrentDate from "./_components/CurretDate"
+import Link from "next/link"
+import SearchItem from "./_components/SearchItem"
 
 type BarbershopProps = {
   id: string
@@ -34,17 +35,11 @@ export default async function Home() {
     <>
       <Header />
       <div className="mt-4">
-        <h2>
-          Olá, <span className="text-xl font-bold">Anderson!</span>
-        </h2>
-        <p>Segunda-feira, 01 de Outubro.</p>
+        <UserGreeting />
+        <CurrentDate />
 
-        {/* Busca */}
-        <div className="mt-6 flex items-center gap-2">
-          <Input placeholder="Pesquisa" className="text-white" />
-          <Button size="icon">
-            <SearchIcon />
-          </Button>
+        <div className="mt-6">
+          <SearchItem />
         </div>
 
         {/* BUSCA RAPIDA */}
@@ -63,13 +58,15 @@ export default async function Home() {
         </div>
 
         {/* Imagem */}
-        <div className="relative mt-6 h-[150px] w-full">
+        <div className="relative mt-6 h-1 w-full">
+          {/**
           <Image
             src={banner}
             fill
             className="rounded-xl border border-solid border-white object-cover"
             alt="Agnede com os melhores com a cutify"
           />
+           */}
         </div>
 
         {/* AGENDAMENTO */}
@@ -83,13 +80,14 @@ export default async function Home() {
           <BarberShopItems barbershops={barbershops} />
         </div>
 
-        {/* POPULARES */}
+        {/* POPULARES 
         <h4 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
           POPULARES
         </h4>
         <div className="no-scrollbar flex h-80 gap-4 overflow-auto">
           <BarberShopItems barbershops={barbershops} />
         </div>
+        */}
       </div>
     </>
   )
