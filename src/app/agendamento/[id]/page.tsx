@@ -104,7 +104,7 @@ export default function AgendamentoPage() {
     setSelectedServices(servicosRecebidos)
 
     console.log("Serviços recebidos:", servicosRecebidos)
-  }, [searchParams])
+  }, [searchParams, fetchBarbearia, fetchBarbeiros])
 
   useEffect(() => {
     const step = parseInt(searchParams.get("step") || "1")
