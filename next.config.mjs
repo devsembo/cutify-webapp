@@ -6,7 +6,7 @@ const nextConfig = {
                 //protocol: 'http',
                 protocol: 'http',
                 //hostname: 'mirex-api.onrender.com',
-                hostname: '192.168.1.81',
+                hostname: 'https://cutify-api-sv8s.onrender.com',
                 pathname: '/image/**',
             },
         ],

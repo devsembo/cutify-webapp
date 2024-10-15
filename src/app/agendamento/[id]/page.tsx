@@ -88,13 +88,22 @@ export default function AgendamentoPage() {
 
   const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined)
 
-  const [selectedServices, setSelectedServices] = useState<string[]>([])
+  const [selectedServices, setSelectedServices] = useState<Servico[]>([])
 
   useEffect(() => {
-    const servicos = searchParams.get("servicos")
-    if (servicos) {
-      setSelectedServices(servicos.split(","))
-    }
+    const servicosIds = searchParams.get("servicos")?.split(",") || []
+    const precos = searchParams.get("precos")?.split(",") || []
+    const nomes = searchParams.get("nome")?.split(",") || []
+
+    const servicosRecebidos = servicosIds.map((id, index) => ({
+      id,
+      nome: nomes[index] || ` ${index + 1}`,
+      preco: parseFloat(precos[index] || "0"),
+    }))
+
+    setSelectedServices(servicosRecebidos)
+
+    console.log("Serviços recebidos:", servicosRecebidos)
   }, [searchParams])
 
   useEffect(() => {
@@ -138,20 +147,6 @@ export default function AgendamentoPage() {
         ? prev.filter((id) => id !== barberID)
         : [...prev, barberID],
     )
-  }
-
-  async function fetchServicos() {
-    const apiClient = setupAPIClient()
-    try {
-      const response = await apiClient.get(`/servico`, {
-        params: { barbershop_id: barberiaId },
-      })
-      setServicos(response.data)
-    } catch (error) {
-      console.error("Erro ao buscar barbeiros:", error)
-    } finally {
-      setIsLoading(false)
-    }
   }
 
   async function fetchBarbeiros() {
@@ -207,7 +202,7 @@ export default function AgendamentoPage() {
       {barbearia && (
         <div className="relative h-[200px] w-full">
           <Image
-            src={`http://192.168.1.81:3333/image/${barbearia.fotoCapa}`}
+            src={`http://https://cutify-api-sv8s.onrender.com/image/${barbearia.fotoCapa}`}
             alt={barbearia.nome}
             fill
             className="object-cover"
@@ -353,7 +348,7 @@ export default function AgendamentoPage() {
             )}
             {selectedTime && (
               <div className="mt-12 flex flex-col items-center justify-center">
-                <div className="ml-2.5 h-auto w-80 rounded border border-solid bg-zinc-950 p-3 text-white">
+                <div className="ml-2.5 flex h-auto w-80 flex-col gap-2 rounded border border-solid bg-zinc-950 p-3 text-white">
                   <h3 className="mb-2 font-sans text-sm">
                     Resumo do Agendamento
                   </h3>
@@ -367,7 +362,7 @@ export default function AgendamentoPage() {
                     <p className="flex justify-between text-sm text-gray-600">
                       Data:{" "}
                       <span className="text-white">
-                        {selectedDay.toLocaleDateString("pt-BR")}
+                        {selectedDay.toLocaleDateString("pt-pt")}
                       </span>
                     </p>
                   )}
@@ -376,28 +371,8 @@ export default function AgendamentoPage() {
                       Hora: <span className="text-white">{selectedTime}</span>
                     </p>
                   )}
-                  {searchParams.get("servicos") && (
-                    <>
-                      <p className="flex justify-between text-sm text-gray-600">
-                        Serviços:
-                      </p>
-                      <ul className="list-inside list-disc">
-                        {searchParams
-                          .get("servicos")
-                          ?.split(",")
-                          .map((service, index) => (
-                            <li
-                              key={index}
-                              className="ml-5 flex justify-between text-sm text-gray-600"
-                            >
-                              {service}
-                            </li>
-                          ))}
-                      </ul>
-                    </>
-                  )}
                   {selectedBarber && barbeiros.length > 0 && (
-                    <p className="ml-5 flex justify-between text-sm text-gray-600">
+                    <p className="flex justify-between text-sm text-gray-600">
                       Barbeiro:{" "}
                       <span className="text-white">
                         {
@@ -408,8 +383,40 @@ export default function AgendamentoPage() {
                     </p>
                   )}
 
-                  <p>{}</p>
+                  <div>
+                    <p className="text-sm">Serviços:</p>
+                  </div>
+                  {selectedServices.map((servico) => (
+                    <div
+                      key={servico.nome}
+                      className="ml-5 flex justify-between text-sm"
+                    >
+                      <span className="text-gray-600">{servico.id}</span>
+                      <span className="text-white">
+                        €{servico.preco.toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                  <div className="mt-2 border-t border-gray-600 pt-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Total:</span>
+                      <span className="text-white">
+                        €
+                        {selectedServices
+                          .reduce((total, servico) => total + servico.preco, 0)
+                          .toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
+              </div>
+            )}
+
+            {selectedTime && (
+              <div className="flex h-24 w-full items-center justify-center">
+                <Button className="w-56 rounded-3xl bg-fuchsia-700 uppercase text-white">
+                  Agendar
+                </Button>
               </div>
             )}
           </SheetContent>

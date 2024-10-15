@@ -31,7 +31,7 @@ function BarberShopItems({ barbershops }: BarberShopItemsProps) {
           <CardContent className="flex flex-col p-0">
             <div className="relative h-[159px]">
               <Image
-                src={`http://192.168.1.81:3333/image/${barbershop.fotoCapa}`}
+                src={`http://https://cutify-api-sv8s.onrender.com/image/${barbershop.fotoCapa}`}
                 alt={barbershop.fotoCapa}
                 width={500}
                 height={300}

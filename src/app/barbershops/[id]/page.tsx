@@ -87,7 +87,9 @@ async function getData(id: string): Promise<BarberiaData> {
 
 export default function BarberShopPage({ params }: { params: Params }) {
   const [barberiaData, setBarberiaData] = useState<BarberiaData | null>(null)
-  const [selectedServices, setSelectedServices] = useState<string[]>([])
+  const [selectedServices, setSelectedServices] = useState<
+    Array<{ id: string; preco: number; nome: string }>
+  >([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -108,11 +110,15 @@ export default function BarberShopPage({ params }: { params: Params }) {
     fetchData()
   }, [params.id])
 
-  const toggleService = (serviceId: string) => {
+  const toggleService = (
+    serviceId: string,
+    servicePreco: number,
+    servicoNome: string,
+  ) => {
     setSelectedServices((prev) =>
-      prev.includes(serviceId)
-        ? prev.filter((id) => id !== serviceId)
-        : [...prev, serviceId],
+      prev.some((service) => service.id === serviceId)
+        ? prev.filter((service) => service.id !== serviceId)
+        : [...prev, { id: serviceId, preco: servicePreco, nome: servicoNome }],
     )
   }
 
@@ -120,8 +126,12 @@ export default function BarberShopPage({ params }: { params: Params }) {
     if (selectedServices.length === 0) {
       alertTriggerRef.current?.click()
     } else {
+      const serviceIds = selectedServices.map((service) => service.id)
+      const servicePrices = selectedServices.map((service) => service.preco)
+      const serviceNames = selectedServices.map((service) => service.nome)
+
       router.push(
-        `/agendamento/${params.id}?step=1&servicos=${selectedServices.join(",")}`,
+        `/agendamento/${params.id}?step=1&servicos=${serviceIds.join(",")}&precos=${servicePrices.join(",")}&nome=${serviceNames.join(",")}`,
       )
     }
   }
@@ -170,7 +180,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
       {/* Foto de Capa */}
       <div className="relative h-[200px] w-full">
         <Image
-          src={`http://192.168.1.81:3333/image/${barbearia.fotoCapa}`}
+          src={`http://https://cutify-api-sv8s.onrender.com/image/${barbearia.fotoCapa}`}
           alt={barbearia.nome}
           fill
           className="object-cover"
@@ -232,8 +242,10 @@ export default function BarberShopPage({ params }: { params: Params }) {
           <ServiceItem
             key={servico.id}
             servico={servico}
-            isSelected={selectedServices.includes(servico.nome)}
-            onToggle={() => toggleService(servico.nome)}
+            isSelected={selectedServices.some((s) => s.id === servico.nome)}
+            onToggle={() =>
+              toggleService(servico.nome, servico.preco, servico.id)
+            }
           />
         ))}
       </div>
