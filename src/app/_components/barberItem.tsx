@@ -25,7 +25,7 @@ function BarberItem({ barbeiro, isSelected, onToggle }: BarberItemProps) {
       <CardContent className="flex items-center justify-between gap-2 p-3">
         <div className="flex gap-3 text-white">
           <Image
-            src={`http://https://cutify-api-sv8s.onrender.com/image/${barbeiro.fotoPerfil}`}
+            src={`https://cutify-api-sv8s.onrender.com/image/${barbeiro.fotoPerfil}`}
             alt={barbeiro.nome}
             width={50}
             height={50}
