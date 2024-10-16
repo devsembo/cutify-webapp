@@ -288,7 +288,10 @@ export default function AgendamentoPage() {
         </Button>
 
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetContent onCloseAutoFocus={closeSheet} className="w-[85%] px-0">
+          <SheetContent
+            onCloseAutoFocus={closeSheet}
+            className="w-[85%] overflow-y-auto px-0"
+          >
             <SheetHeader>
               <SheetTitle>Agendar serviço</SheetTitle>
             </SheetHeader>
