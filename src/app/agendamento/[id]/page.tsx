@@ -1,6 +1,12 @@
 "use client"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
-import React, { useEffect, useRef, useState } from "react"
+import React, {
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from "react"
 import { setupAPIClient } from "@/services/api"
 import Image from "next/image"
 import { Button } from "@/app/_components/ui/button"
@@ -73,6 +79,7 @@ export default function AgendamentoPage() {
   const [step, setStep] = useState(1)
   const [barbeiros, setBarbeiros] = useState<Barbeiro[]>([])
   const [servicos, setServicos] = useState<Servico[]>([])
+
   const [isLoading, setIsLoading] = useState(true)
   const [barbearia, setBarbearia] = useState<Barbearia | null>(null)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
@@ -90,6 +97,8 @@ export default function AgendamentoPage() {
 
   const [selectedServices, setSelectedServices] = useState<Servico[]>([])
 
+  const MemoizedBarberItem = React.memo(BarberItem)
+
   useEffect(() => {
     const servicosIds = searchParams.get("servicos")?.split(",") || []
     const precos = searchParams.get("precos")?.split(",") || []
@@ -102,32 +111,9 @@ export default function AgendamentoPage() {
     }))
 
     setSelectedServices(servicosRecebidos)
+  }, [searchParams])
 
-    console.log("Serviços recebidos:", servicosRecebidos)
-  }, [searchParams, fetchBarbearia, fetchBarbeiros])
-
-  useEffect(() => {
-    const step = parseInt(searchParams.get("step") || "1")
-    setStep(step)
-
-    if (barberiaId) {
-      fetchBarbearia()
-      fetchBarbeiros()
-    }
-  }, [searchParams, barberiaId])
-
-  const handleDateSelect = (date: Date | undefined) => {
-    setSelectedDay(date)
-    if (date) {
-      TimeList(date)
-    }
-  }
-
-  const handleSelectedTime = (hora: string) => {
-    setSelectedTime((prev) => (prev === hora ? null : hora))
-  }
-
-  async function fetchBarbearia() {
+  const fetchBarbearia = useCallback(async () => {
     if (!barberiaId) return
 
     const apiClient = setupAPIClient()
@@ -139,17 +125,9 @@ export default function AgendamentoPage() {
     } catch (error) {
       console.error("Erro ao buscar dados da barbearia:", error)
     }
-  }
+  }, [barberiaId])
 
-  const toggleBarber = (barberID: string) => {
-    setSelectedBarber((prev) =>
-      prev.includes(barberID)
-        ? prev.filter((id) => id !== barberID)
-        : [...prev, barberID],
-    )
-  }
-
-  async function fetchBarbeiros() {
+  const fetchBarbeiros = useCallback(async () => {
     if (!barberiaId) return
 
     const apiClient = setupAPIClient()
@@ -163,24 +141,57 @@ export default function AgendamentoPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [barberiaId])
 
-  async function TimeList(selectedDate: Date) {
-    const apiClient = setupAPIClient()
-    try {
-      const formattedDate = `${selectedDate.getDate().toString().padStart(2, "0")}-${(selectedDate.getMonth() + 1).toString().padStart(2, "0")}-${selectedDate.getFullYear()}`
-      const response = await apiClient.get("/horas", {
-        params: {
-          data: formattedDate,
-          barbeiro_id: "a3525899-ecb6-411f-9221-5ebee06873f9", // Use the selected barber if available
-        },
-      })
-      setHorasDisponiveis(response.data)
-    } catch (error) {
-      console.error("Erro ao buscar horas disponíveis:", error)
-      setHorasDisponiveis([])
+  useEffect(() => {
+    const step = parseInt(searchParams.get("step") || "1")
+    setStep(step)
+
+    if (barberiaId) {
+      fetchBarbearia()
+      fetchBarbeiros()
+    }
+  }, [searchParams, barberiaId, fetchBarbearia, fetchBarbeiros])
+
+  const handleDateSelect = (date: Date | undefined) => {
+    setSelectedDay(date)
+    if (date) {
+      TimeList(date)
     }
   }
+
+  const handleSelectedTime = (hora: string) => {
+    setSelectedTime((prev) => (prev === hora ? null : hora))
+  }
+
+  const toggleBarber = (barberID: string) => {
+    setSelectedBarber((prev) =>
+      prev.includes(barberID)
+        ? prev.filter((id) => id !== barberID)
+        : [...prev, barberID],
+    )
+  }
+
+  const TimeList = useCallback(
+    async (selectedDate: Date) => {
+      const apiClient = setupAPIClient()
+      try {
+        const formattedDate = `${selectedDate.getDate().toString().padStart(2, "0")}-${(selectedDate.getMonth() + 1).toString().padStart(2, "0")}-${selectedDate.getFullYear()}`
+        const response = await apiClient.get("/horas", {
+          params: {
+            data: formattedDate,
+            barbeiro_id:
+              selectedBarber[0] || "a3525899-ecb6-411f-9221-5ebee06873f9",
+          },
+        })
+        setHorasDisponiveis(response.data)
+      } catch (error) {
+        console.error("Erro ao buscar horas disponíveis:", error)
+        setHorasDisponiveis([])
+      }
+    },
+    [selectedBarber],
+  )
 
   const handleAgendarClick = () => {
     if (selectedBarber.length === 0) {
@@ -197,7 +208,7 @@ export default function AgendamentoPage() {
   if (isLoading) return <div>Carregando...</div>
 
   return (
-    <>
+    <Suspense fallback={<div>Carregando...</div>}>
       {/* Foto de Capa */}
       {barbearia && (
         <div className="relative h-[200px] w-full">
@@ -258,7 +269,7 @@ export default function AgendamentoPage() {
             <h1 className="mb-4 text-2xl font-bold">Selecione um Barbeiro</h1>
             <div className="space-y-2">
               {barbeiros.map((barbeiro) => (
-                <BarberItem
+                <MemoizedBarberItem
                   key={barbeiro.id}
                   barbeiro={barbeiro}
                   isSelected={selectedBarber.includes(barbeiro.id)}
@@ -439,6 +450,6 @@ export default function AgendamentoPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </Suspense>
   )
 }
