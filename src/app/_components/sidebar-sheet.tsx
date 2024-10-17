@@ -1,5 +1,5 @@
 "use client"
-import React, { useContext } from "react"
+import React, { useContext, useState, useEffect } from "react"
 import { Button } from "./ui/button"
 import { AuthContext } from "@/contexts/AuthContext"
 import Image from "next/image"
@@ -39,6 +39,7 @@ import {
 function SideBarSheet() {
   const { isAuthenticated, user, signOut } = useContext(AuthContext)
   const router = useRouter()
+  const [userName, setUserName] = useState(null)
 
   const handleSignOut = async () => {
     try {
@@ -47,6 +48,17 @@ function SideBarSheet() {
     } catch (error) {
       console.error("Erro ao fazer logout:", error)
     }
+  }
+
+  function useUserName() {
+    const [userName, setUserName] = useState("")
+
+    useEffect(() => {
+      const storedName = localStorage.getItem("userName") || ""
+      setUserName(storedName)
+    }, [])
+
+    return userName
   }
   return (
     <>
@@ -69,7 +81,7 @@ function SideBarSheet() {
                 <AvatarFallback>C </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-bold">{user?.nome || "Nome do Usuário"}</p>
+                <p className="font-bold">{userName || "Nome do Usuário"}</p>
                 <p className="text-xs">{user?.email || "email@exemplo.com"}</p>
               </div>
             </div>

@@ -180,7 +180,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
       {/* Foto de Capa */}
       <div className="relative h-[200px] w-full">
         <Image
-          src={`https://cutify-api-sv8s.onrender.com/image/${barbearia.fotoCapa}`}
+          src={`http://localhost:3333/image/${barbearia.fotoCapa}`}
           alt={barbearia.nome}
           fill
           className="object-cover"

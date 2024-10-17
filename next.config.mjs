@@ -3,10 +3,10 @@ const nextConfig = {
     images: {
         remotePatterns: [
             {
-                //protocol: 'http',
-                protocol: 'https',
-                //hostname: 'mirex-api.onrender.com',
-                hostname: 'cutify-api-sv8s.onrender.com',
+                protocol: 'http',
+                //protocol: 'https',
+                hostname: 'localhost',
+                //hostname: 'cutify-api-sv8s.onrender.com',
                 pathname: '/image/**',
             },
         ],

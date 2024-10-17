@@ -1,11 +1,14 @@
 "use client"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
+import { parseCookies } from "nookies"
+
 import React, {
   Suspense,
   useEffect,
   useRef,
   useState,
   useCallback,
+  useContext,
 } from "react"
 import { setupAPIClient } from "@/services/api"
 import Image from "next/image"
@@ -17,6 +20,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/app/_components/ui/sheet"
+
+import { AuthContext } from "@/contexts/AuthContext"
 
 import {
   ChevronLeftIcon,
@@ -66,20 +71,12 @@ interface Servico {
   preco: number
 }
 
-interface Agendamento {
-  servicos: string[]
-  barbeiroId: string | null
-  data: string | null
-  hora: string | null
-}
-
 export default function AgendamentoPage() {
+  const { user } = useContext(AuthContext)
   const router = useRouter()
   const searchParams = useSearchParams()
   const [step, setStep] = useState(1)
   const [barbeiros, setBarbeiros] = useState<Barbeiro[]>([])
-  const [servicos, setServicos] = useState<Servico[]>([])
-
   const [isLoading, setIsLoading] = useState(true)
   const [barbearia, setBarbearia] = useState<Barbearia | null>(null)
   const [isSheetOpen, setIsSheetOpen] = useState(false)
@@ -87,17 +84,21 @@ export default function AgendamentoPage() {
   const params = useParams()
   const barberiaId = params.id as string
   const alertTriggerRef = useRef<HTMLButtonElement>(null)
-
   const [horasDisponiveis, setHorasDisponiveis] = useState<{ hora: string }[]>(
     [],
   )
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
-
   const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined)
-
   const [selectedServices, setSelectedServices] = useState<Servico[]>([])
-
   const MemoizedBarberItem = React.memo(BarberItem)
+
+  useEffect(() => {
+    const cookies = parseCookies()
+    const token = cookies["@cutifywebtoken.token"]
+    if (!token) {
+      router.push("/login")
+    }
+  }, [])
 
   useEffect(() => {
     const servicosIds = searchParams.get("servicos")?.split(",") || []
@@ -176,12 +177,15 @@ export default function AgendamentoPage() {
     async (selectedDate: Date) => {
       const apiClient = setupAPIClient()
       try {
-        const formattedDate = `${selectedDate.getDate().toString().padStart(2, "0")}-${(selectedDate.getMonth() + 1).toString().padStart(2, "0")}-${selectedDate.getFullYear()}`
+        const formattedDate = selectedDate.toLocaleDateString("en-CA", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        })
         const response = await apiClient.get("/horas", {
           params: {
             data: formattedDate,
-            barbeiro_id:
-              selectedBarber[0] || "a3525899-ecb6-411f-9221-5ebee06873f9",
+            barbeiro_id: selectedBarber[0],
           },
         })
         setHorasDisponiveis(response.data)
@@ -205,6 +209,45 @@ export default function AgendamentoPage() {
     setIsSheetOpen(false)
   }
 
+  async function handleAppointment() {
+    if (
+      !barbearia?.id ||
+      !selectedDay ||
+      !selectedTime ||
+      !selectedBarber ||
+      selectedBarber.length === 0 ||
+      !selectedServices ||
+      selectedServices.length === 0 ||
+      !user?.id
+    ) {
+      alert(
+        "Por favor, preencha todos os campos necessários para o agendamento.",
+      )
+      return
+    }
+
+    const appointmentData = {
+      barbeariaId: barbearia.id,
+      data: selectedDay.toLocaleDateString("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      hora: selectedTime,
+      servicoIds: selectedServices.map((service) => service.nome), // Envie apenas os IDs dos serviços
+      barbeiroId: selectedBarber[0],
+      usuarioId: user.id,
+    }
+
+    const apiClient = setupAPIClient()
+    try {
+      const response = await apiClient.post("/appointment", appointmentData)
+      alert("Agendamento feito com sucesso!")
+    } catch (error) {
+      alert("Ops! Algo deu errado. Por favor, tente novamente.")
+    }
+  }
+
   if (isLoading) return <div>Carregando...</div>
 
   return (
@@ -213,7 +256,7 @@ export default function AgendamentoPage() {
       {barbearia && (
         <div className="relative h-[200px] w-full">
           <Image
-            src={`https://cutify-api-sv8s.onrender.com/image/${barbearia.fotoCapa}`}
+            src={`http://localhost:3333/image/${barbearia.fotoCapa}`}
             alt={barbearia.nome}
             fill
             className="object-cover"
@@ -283,7 +326,11 @@ export default function AgendamentoPage() {
 
       {/* Botão de agendar */}
       <div className="flex justify-center p-4">
-        <Button onClick={handleAgendarClick} className="w-full max-w-md">
+        <Button
+          onClick={handleAgendarClick}
+          className="w-full max-w-md"
+          disabled={!selectedDay || !selectedTime}
+        >
           Agendar
         </Button>
 
@@ -338,9 +385,9 @@ export default function AgendamentoPage() {
               <div className="overflow-y- scrollbar-thin no-scrollbar overflow-x-auto border-b border-solid">
                 {horasDisponiveis.length > 0 ? (
                   <div className="flex min-w-max gap-3 p-3">
-                    {horasDisponiveis.map((horaObj) => (
+                    {horasDisponiveis.map((horaObj, index) => (
                       <Button
-                        key={horaObj.hora}
+                        key={index}
                         variant="outline"
                         className={`flex-shrink-0 whitespace-nowrap rounded-full transition-colors ${
                           selectedTime === horaObj.hora
@@ -428,7 +475,10 @@ export default function AgendamentoPage() {
 
             {selectedTime && (
               <div className="flex h-24 w-full items-center justify-center">
-                <Button className="w-56 rounded-3xl bg-fuchsia-700 uppercase text-white">
+                <Button
+                  className="w-56 rounded-3xl bg-fuchsia-700 uppercase text-white"
+                  onClick={handleAppointment}
+                >
                   Agendar
                 </Button>
               </div>
