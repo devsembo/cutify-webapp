@@ -326,11 +326,7 @@ export default function AgendamentoPage() {
 
       {/* Botão de agendar */}
       <div className="flex justify-center p-4">
-        <Button
-          onClick={handleAgendarClick}
-          className="w-full max-w-md"
-          disabled={!selectedDay || !selectedTime}
-        >
+        <Button onClick={handleAgendarClick} className="w-full max-w-md">
           Agendar
         </Button>
 
@@ -478,6 +474,7 @@ export default function AgendamentoPage() {
                 <Button
                   className="w-56 rounded-3xl bg-fuchsia-700 uppercase text-white"
                   onClick={handleAppointment}
+                  disabled={!selectedDay || !selectedTime}
                 >
                   Agendar
                 </Button>
