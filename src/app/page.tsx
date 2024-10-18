@@ -75,8 +75,9 @@ export default async function Home() {
            */}
         </div>
 
-        {/* AGENDAMENTO */}
+        {/* AGENDAMENTO 
         <BookingItem />
+        */}
 
         {/* Reconmendados */}
         <h4 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
