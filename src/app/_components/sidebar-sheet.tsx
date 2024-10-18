@@ -81,7 +81,7 @@ function SideBarSheet() {
                 <AvatarFallback>C </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-bold">{userName || "Nome do Usuário"}</p>
+                <p className="font-bold">{user?.nome || "Nome do Usuário"}</p>
                 <p className="text-xs">{user?.email || "email@exemplo.com"}</p>
               </div>
             </div>
@@ -148,7 +148,7 @@ function SideBarSheet() {
             <div>
               <p className="text-xs text-gray-400">
                 Os melhores, nos melhores.{" "}
-                <span className="text-red-700">CUTIFY</span>
+                <span className="font-bold text-red-700 underline">CUTIFY</span>
               </p>
             </div>
           )}
