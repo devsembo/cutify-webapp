@@ -8,8 +8,8 @@ export function setupAPIClient(
   const cookies = parseCookies(ctx)
 
   const api = axios.create({
-    baseURL: "http://localhost:3333",
-    //baseURL: "https://cutify-api-sv8s.onrender.com",
+    //baseURL: "http://localhost:3333",
+    baseURL: "https://cutify-api-sv8s.onrender.com",
     headers: {
       Authorization: `Bearer ${cookies["@cutifywebtoken.token"]}`,
     },
