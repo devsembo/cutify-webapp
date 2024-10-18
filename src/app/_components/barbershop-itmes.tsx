@@ -21,6 +21,13 @@ interface BarberShopItemsProps {
 }
 
 function BarberShopItems({ barbershops }: BarberShopItemsProps) {
+  if (barbershops.length === 0) {
+    return (
+      <div className="mt-4 text-center text-white">
+        <p>Ops!, ainda não temos Os melhores connosco.</p>
+      </div>
+    )
+  }
   return (
     <>
       {barbershops.map((barbershop) => (
