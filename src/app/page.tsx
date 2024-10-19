@@ -12,6 +12,7 @@ import CurrentDate from "./_components/CurretDate"
 import Link from "next/link"
 import SearchItem from "./_components/SearchItem"
 import SugestItem from "./_components/SugestItem"
+import CookieConsent from "./_components/CookieConsent"
 
 type BarbershopProps = {
   id: string
@@ -37,7 +38,10 @@ export default async function Home() {
       <Header />
       <div className="mt-4">
         <UserGreeting />
+        {/**
         <CurrentDate />
+           */}
+        <CookieConsent />
 
         <div className="mt-6">
           <SearchItem />

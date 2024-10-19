@@ -4,62 +4,30 @@ import { Button } from "./ui/button"
 import { AuthContext } from "@/contexts/AuthContext"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import {
-  Apple,
-  AppleIcon,
-  Calendar,
-  HomeIcon,
-  LogInIcon,
-  LogOut,
-  MenuIcon,
-} from "lucide-react"
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-} from "./ui/sheet"
+import { Calendar, HomeIcon, LogInIcon, LogOut } from "lucide-react"
+import { SheetContent, SheetHeader, SheetTitle, SheetClose } from "./ui/sheet"
 import quickOption from "../_constants/search"
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar"
 import Link from "next/link"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogDescription,
-  DialogFooter,
-} from "./ui/dialog"
 
-function SideBarSheet() {
+interface SideBarSheetProps {
+  onClose: () => void // Definindo a prop onClose
+}
+
+const SideBarSheet: React.FC<SideBarSheetProps> = ({ onClose }) => {
   const { isAuthenticated, user, signOut } = useContext(AuthContext)
   const router = useRouter()
-  const [userName, setUserName] = useState(null)
 
   const handleSignOut = async () => {
     try {
       await signOut()
+      onClose() // Fecha o Sheet
       router.push("/") // Redireciona para a página inicial
     } catch (error) {
       console.error("Erro ao fazer logout:", error)
     }
   }
 
-  function useUserName() {
-    const [userName, setUserName] = useState("")
-
-    useEffect(() => {
-      const storedName = localStorage.getItem("userName") || ""
-      setUserName(storedName)
-    }, [])
-
-    return userName
-  }
   return (
     <>
       <SheetContent className="overflow-y-auto">
@@ -87,7 +55,7 @@ function SideBarSheet() {
             </div>
           ) : (
             <>
-              <h2 className="font-bold">Olá, faça o seu login!</h2>
+              <h2 className="font-medium">Olá, faça o seu login!</h2>
               <Button size="icon" className="h-8 w-8" variant="outline" asChild>
                 <Link href="/login">
                   <LogInIcon size={16} />
@@ -106,12 +74,16 @@ function SideBarSheet() {
               </Link>
             </Button>
           </SheetClose>
-          <Button className="justify-start gap-2" variant={"ghost"} asChild>
-            <Link href={"/agendamentos"}>
-              <Calendar size={18} />
-              Agendamentos
-            </Link>
-          </Button>
+          {isAuthenticated ? (
+            <Button className="justify-start gap-2" variant={"ghost"} asChild>
+              <Link href={"/agendamentos"}>
+                <Calendar size={18} />
+                Atividade
+              </Link>
+            </Button>
+          ) : (
+            ""
+          )}
         </div>
         <div className="flex flex-col gap-4 border-b border-solid p-5">
           {quickOption.map((option) => (

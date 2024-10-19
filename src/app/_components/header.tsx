@@ -11,13 +11,18 @@ import { AuthContext } from "@/contexts/AuthContext"
 import { parseCookies } from "nookies"
 import { Badge } from "./ui/badge"
 import { useRouter } from "next/navigation"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 
 export default function Header() {
   const cookies = parseCookies()
   const { user } = useContext(AuthContext)
   const token = cookies["@cutifywebtoken.token"]
   const router = useRouter()
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+
+  const closeSheet = () => {
+    setIsSheetOpen(false)
+  }
 
   function handleSignIn() {
     router.push("/login")
@@ -60,13 +65,13 @@ export default function Header() {
             )}
             {token && <Badge className="h-7">{user?.nome}</Badge>}
 
-            <Sheet>
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild className="border-0">
                 <Button size="icon" variant="outline">
                   <MenuIcon />
                 </Button>
               </SheetTrigger>
-              <SideBarSheet />
+              <SideBarSheet onClose={closeSheet} />
             </Sheet>
           </div>
         </CardContent>
