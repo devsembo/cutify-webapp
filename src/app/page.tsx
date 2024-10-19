@@ -11,6 +11,7 @@ import BookingItem from "./_components/bookingItem"
 import CurrentDate from "./_components/CurretDate"
 import Link from "next/link"
 import SearchItem from "./_components/SearchItem"
+import SugestItem from "./_components/SugestItem"
 
 type BarbershopProps = {
   id: string
@@ -95,6 +96,37 @@ export default async function Home() {
           <BarberShopItems barbershops={barbershops} />
         </div>
         */}
+        <div className="flex h-full w-full flex-col bg-black py-4">
+          <h4 className="ml-1 p-2 text-sm font-bold uppercase text-gray-400">
+            SUGESTÕES
+          </h4>
+
+          <div className="flex flex-col items-center gap-4">
+            <SugestItem
+              titulo="Melhorar o visual"
+              icon="selfcare.gif"
+              descricao="Os melhores sempre disponíveis para si,
+                        temos os melhores connosco, desde barbearias,
+                        spas, até salões de esteticas"
+              link="/detalhes"
+            />
+            <SugestItem
+              titulo="Agende"
+              descricao="Faça a sua marcação
+               com antecedência 
+               e relaxe no dia do
+                seu tratamento"
+              link="/detalhes"
+              icon="calendar.png"
+            />
+            <SugestItem
+              titulo="Localização"
+              descricao="Não importa aonde está, nós mostramo-lhe os melhores perto de si."
+              icon="location.png"
+              link="/detalhes"
+            />
+          </div>
+        </div>
       </div>
     </>
   )

@@ -92,6 +92,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
   >([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
   const router = useRouter()
   const alertTriggerRef = useRef<HTMLButtonElement>(null)
 
@@ -180,7 +181,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
       {/* Foto de Capa */}
       <div className="relative h-[200px] w-full">
         <Image
-          src={`https://cutify-api-sv8s.onrender.com/image/${barbearia.fotoCapa}`}
+          src={`http://localhost:3333/image/${barbearia.fotoCapa}`}
           alt={barbearia.nome}
           fill
           className="object-cover"
@@ -277,7 +278,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
         <AlertDialogTrigger ref={alertTriggerRef} className="hidden" />
         <AlertDialogContent className="w-80 justify-items-center rounded text-yellow-400">
           <AlertDialogHeader>
-            <AlertDialogTitle className="justify-items-center">
+            <AlertDialogTitle>
               <TriangleAlert color="yellow" size={32} className="ml-[120px]" />
             </AlertDialogTitle>
             <AlertDialogDescription className="text-white">

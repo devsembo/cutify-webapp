@@ -20,12 +20,12 @@ interface ServiceItemProps {
 function ServiceItem({ servico, isSelected, onToggle }: ServiceItemProps) {
   return (
     <Card className="h-28" key={servico.id}>
-      <CardContent className="flex items-center justify-between gap-2 p-3">
+      <CardContent className="flex items-center justify-between gap-2">
         <div className="text-white">
           <h1>{servico.nome}</h1>
           <p className="mb-1 w-64 text-sm text-gray-400">{servico.descricao}</p>
-          <p className="text-sm text-blue-400">
-            duração: {servico.duracao} min
+          <p className="truncate text-xs text-blue-400">
+            duração: {servico.duracao} min, com o tempo de espera.
           </p>
         </div>
 

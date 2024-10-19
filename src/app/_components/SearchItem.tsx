@@ -54,6 +54,7 @@ function SearchItem() {
                   <FormControl>
                     <Input
                       placeholder="Barbearia ou salão favorito"
+                      className="bg-white text-black"
                       {...field}
                     />
                   </FormControl>

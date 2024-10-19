@@ -72,7 +72,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       destroyCookie(undefined, "@cutifywebtoken.token")
       setUser(null)
       localStorage.removeItem("user")
-      router.push("/")
+      router.push("/agendamentos")
     } catch (error) {
       console.error("Erro ao deslogar", error)
     }
