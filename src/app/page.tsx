@@ -48,7 +48,7 @@ export default async function Home() {
         </div>
 
         {/* BUSCA RAPIDA */}
-        <div className="no-scrollbar mt-6 flex gap-3 overflow-x-scroll">
+        <div className="no-scrollbar mt-6 flex gap-3 overflow-x-scroll lg:hidden">
           {quickOption.map((option) => (
             <Button
               className="gap-3 border bg-gray-950"

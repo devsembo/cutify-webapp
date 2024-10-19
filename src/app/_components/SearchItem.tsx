@@ -50,7 +50,7 @@ function SearchItem() {
               control={form.control}
               name="search"
               render={({ field }) => (
-                <FormItem className="w-full">
+                <FormItem className="w-full lg:w-[450px]">
                   <FormControl>
                     <Input
                       placeholder="Barbearia ou salão favorito"

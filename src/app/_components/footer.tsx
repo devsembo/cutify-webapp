@@ -28,8 +28,7 @@ function Footer() {
               target="_blank"
               className="mt-[-18px] font-light"
             >
-              Livro de{" "}
-              <span className="font-bold text-red-700">Reclamações</span>
+              Livro de Reclamações
             </Link>
 
             <div className="flex flex-col gap-5">

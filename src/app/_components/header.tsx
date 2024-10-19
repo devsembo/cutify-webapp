@@ -45,7 +45,7 @@ export default function Header() {
             />
           </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between">
             {!token && (
               <div className="flex items-center gap-2">
                 <Button
@@ -63,10 +63,14 @@ export default function Header() {
                 </Button>
               </div>
             )}
-            {token && <Badge className="h-7">{user?.nome}</Badge>}
+            {token && (
+              <Badge className="h-7">
+                <Link href={"/profile"}>{user?.nome}</Link>
+              </Badge>
+            )}
 
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-              <SheetTrigger asChild className="border-0">
+              <SheetTrigger asChild className="] border-0">
                 <Button size="icon" variant="outline">
                   <MenuIcon />
                 </Button>

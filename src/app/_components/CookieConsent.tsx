@@ -43,13 +43,13 @@ const CookieConsent = () => {
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-col items-center gap-3">
             <AlertDialogAction
-              className="h-8 w-24 bg-red-500"
+              className="h-8 w-24 border bg-black text-white"
               onClick={handleDeclineCookies}
             >
               Recusar
             </AlertDialogAction>
             <AlertDialogAction
-              className="h-8 w-24 bg-green-400"
+              className="h-8 w-24 bg-white"
               onClick={handleAcceptCookies}
             >
               Aceitar

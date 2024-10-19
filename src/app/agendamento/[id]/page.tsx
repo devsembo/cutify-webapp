@@ -244,6 +244,7 @@ export default function AgendamentoPage() {
       const response = await apiClient.post("/appointment", appointmentData)
       alert("Agendamento feito com sucesso!")
     } catch (error) {
+      console.log(appointmentData)
       alert("Ops! Algo deu errado. Por favor, tente novamente.")
     }
   }

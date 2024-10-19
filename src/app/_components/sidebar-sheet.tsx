@@ -78,7 +78,7 @@ const SideBarSheet: React.FC<SideBarSheetProps> = ({ onClose }) => {
             <Button className="justify-start gap-2" variant={"ghost"} asChild>
               <Link href={"/agendamentos"}>
                 <Calendar size={18} />
-                Atividade
+                Agendamentos
               </Link>
             </Button>
           ) : (
