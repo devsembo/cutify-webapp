@@ -21,9 +21,9 @@ interface BarberItemProps {
 
 function BarberItem({ barbeiro, isSelected, onToggle }: BarberItemProps) {
   return (
-    <Card className="h-25" key={barbeiro.id}>
-      <CardContent className="flex items-center justify-between gap-2">
-        <div className="flex gap-3 text-white">
+    <Card className="h-24" key={barbeiro.id}>
+      <CardContent className="my-4 flex flex-row items-center justify-between">
+        <div className="flex items-center gap-3 text-white">
           <Image
             src={`https://cutify-api-sv8s.onrender.com/image/${barbeiro.fotoPerfil}`}
             alt={barbeiro.nome}

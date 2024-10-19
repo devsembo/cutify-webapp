@@ -14,7 +14,7 @@ interface SugestProps {
 function SugestItem({ titulo, icon, descricao, link }: SugestProps) {
   return (
     <>
-      <Card className="flex h-36 w-96 flex-row items-center border-0 bg-gray-900">
+      <Card className="flex h-36 w-[350px] flex-row items-center border-0 bg-gray-900">
         <CardContent className="mt-5 flex flex-col gap-1">
           <h1 className="text-sm font-semibold text-white">{titulo}</h1>
           <p className="w-52 text-xs font-light text-white">{descricao}</p>

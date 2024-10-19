@@ -20,8 +20,8 @@ interface ServiceItemProps {
 function ServiceItem({ servico, isSelected, onToggle }: ServiceItemProps) {
   return (
     <Card className="h-28" key={servico.id}>
-      <CardContent className="flex items-center justify-between gap-2">
-        <div className="text-white">
+      <CardContent className="flex items-center justify-between gap-1">
+        <div className="ml-[-15px] mt-2 flex flex-col text-white">
           <h1>{servico.nome}</h1>
           <p className="mb-1 w-64 text-sm text-gray-400">{servico.descricao}</p>
           <p className="truncate text-xs text-blue-400">

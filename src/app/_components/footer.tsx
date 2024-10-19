@@ -57,8 +57,8 @@ function Footer() {
             </div>
           </div>
           <hr className="my-6" />
-          <p className="flex flex-row justify-center text-sm text-gray-400">
-            © 2024 Copyright{" "}
+          <p className="flex flex-row justify-center gap-2 text-sm text-gray-400">
+            © 2024 Copyright
             <Link
               href={"https://cutify.com"}
               target="_blank"

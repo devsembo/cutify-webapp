@@ -30,7 +30,7 @@ export default function Header() {
   return (
     <>
       <Card className="border-0">
-        <CardContent className="flex flex-row items-center justify-between p-1">
+        <CardContent className="flex flex-row items-center justify-between p-3">
           <Link href={"/"}>
             <Image
               src={logo}

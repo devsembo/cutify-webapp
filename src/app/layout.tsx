@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt" className="dark flex flex-col p-3">
+    <html lang="pt" className="dark flex flex-col overflow-x-hidden p-3">
       <body className={inter.className}>
         <GoogleOAuthProvider clientId="581065928014-hlpvg61jfhmh98dps40h1060ctbdq7i6.apps.googleusercontent.com">
           <AuthProvider>

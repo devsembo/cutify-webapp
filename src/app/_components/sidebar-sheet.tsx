@@ -148,7 +148,7 @@ function SideBarSheet() {
             <div>
               <p className="text-xs text-gray-400">
                 Os melhores, nos melhores.{" "}
-                <span className="font-bold text-red-700 underline">CUTIFY</span>
+                <span className="font-bold text-blue-700">CUTIFY</span>
               </p>
             </div>
           )}
