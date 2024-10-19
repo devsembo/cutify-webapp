@@ -281,7 +281,7 @@ export default function AgendamentoPage() {
                 <MenuIcon />
               </Button>
             </SheetTrigger>
-            <SideBarSheet />
+            <SideBarSheet onClose={closeSheet} />
           </Sheet>
         </div>
       )}

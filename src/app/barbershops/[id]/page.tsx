@@ -96,6 +96,12 @@ export default function BarberShopPage({ params }: { params: Params }) {
   const router = useRouter()
   const alertTriggerRef = useRef<HTMLButtonElement>(null)
 
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+
+  const closeSheet = () => {
+    setIsSheetOpen(false)
+  }
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -207,7 +213,7 @@ export default function BarberShopPage({ params }: { params: Params }) {
               <MenuIcon />
             </Button>
           </SheetTrigger>
-          <SideBarSheet />
+          <SideBarSheet onClose={closeSheet} />
         </Sheet>
       </div>
       {/* Titulo (nome e endereço da barbearia) */}
