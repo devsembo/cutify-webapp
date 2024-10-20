@@ -23,20 +23,22 @@ function BarberShopsContent() {
 
       {searchTerm ? (
         <>
-          <h3 className="p-3 font-bold text-gray-400">
-            Resultados para: {searchTerm}
-          </h3>
-          {isLoading ? (
-            <p>Carregando resultados...</p>
-          ) : barberShops.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4">
-              <BarberShopItems barbershops={barberShops} />
-            </div>
-          ) : (
-            <p className="mt-28 p-5 text-gray-500">
-              Nenhum resultado encontrado para &quot;{searchTerm}&quot;.
-            </p>
-          )}
+          <div className="min-h-[60vh]">
+            <h3 className="p-3 font-bold text-gray-400">
+              Resultados para: {searchTerm}
+            </h3>
+            {isLoading ? (
+              <p>Carregando resultados...</p>
+            ) : barberShops.length > 0 ? (
+              <div className="grid grid-cols-2 gap-4">
+                <BarberShopItems barbershops={barberShops} />
+              </div>
+            ) : (
+              <p className="mt-28 p-5 text-gray-500">
+                Nenhum resultado encontrado para &quot;{searchTerm}&quot;.
+              </p>
+            )}
+          </div>
         </>
       ) : (
         <h3>Digite algo para pesquisar barbearias</h3>

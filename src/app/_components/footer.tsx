@@ -31,26 +31,46 @@ function Footer() {
               Livro de Reclamações
             </Link>
 
-            <div className="flex flex-col gap-5">
-              <div className="flex flex-col gap-2">
-                <h4 className="text-xl">Empresa</h4>
-                <ul className="flex flex-col gap-3">
-                  <li className="text-sm">Sobre nós</li>
-                  <li className="text-sm">As nossas ofertas</li>
-                  <li className="text-sm">Newsroom</li>
-                  <li className="text-sm">Investidores</li>
-                  <li className="text-sm">Blogue</li>
-                  <li className="text-sm">carreiras</li>
+            <div className="flex flex-col gap-10">
+              <div className="flex flex-col gap-4">
+                <h4 className="text-xl font-semibold">Empresa</h4>
+                <ul className="flex flex-col gap-4">
+                  <Link href={"/about-us"}>
+                    <li className="text-xs">Sobre nós</li>
+                  </Link>
+                  <Link href={"/our-offers"}>
+                    <li className="text-xs">As nossas ofertas</li>
+                  </Link>
+                  <Link href={"/newsroom"}>
+                    <li className="text-xs">Newsroom</li>
+                  </Link>
+                  <Link href={"/investors"}>
+                    <li className="text-xs">Investidores</li>
+                  </Link>
+                  <Link href={"/blog"}>
+                    <li className="text-xs">Blogue</li>
+                  </Link>
+                  <Link href={"/carrers"}>
+                    <li className="text-xs">carreiras</li>
+                  </Link>
                 </ul>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <h3 className="text-xl">Produtos</h3>
-                <ul className="flex flex-col gap-3">
-                  <li className="text-sm">Beleza Masculina</li>
-                  <li className="text-sm">Beleza Femenina</li>
-                  <li className="text-sm">Auto Cuidado</li>
-                  <li className="text-sm">Saúde Mental</li>
+              <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-semibold">Produtos</h3>
+                <ul className="flex flex-col gap-4">
+                  <Link href={"/mans-beauty"}>
+                    <li className="text-xs">Beleza Masculina</li>
+                  </Link>
+                  <Link href={"/woman-beauty"}>
+                    <li className="text-xs">Beleza Feminina</li>
+                  </Link>
+                  <Link href={"/self-care"}>
+                    <li className="text-xs">Auto Cuidado</li>
+                  </Link>
+                  <Link href={"/brain-health"}>
+                    <li className="text-xs">Saúde Mental</li>
+                  </Link>
                 </ul>
               </div>
             </div>
