@@ -257,7 +257,7 @@ export default function AgendamentoPage() {
       {barbearia && (
         <div className="relative h-[200px] w-full">
           <Image
-            src={`https://cutify-api-sv8s.onrender.com/image/${barbearia.fotoCapa}`}
+            src={`https://cutify-api-g5dk.onrender.com/image/${barbearia.fotoCapa}`}
             alt={barbearia.nome}
             fill
             className="object-cover"

@@ -21,7 +21,7 @@ function BookingItem() {
               <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8 overflow-hidden rounded-full">
                   <AvatarImage
-                    src="https://cutify-api-sv8s.onrender.com/image/e7139d5ad3-Captura de ecrÃ£ 2024-09-29 203401.png"
+                    src="https://cutify-api-g5dk.onrender.com/image/e7139d5ad3-Captura de ecrÃ£ 2024-09-29 203401.png"
                     alt="Mike Pina Barbeiro da Classic BarberShop"
                   />
                   <AvatarFallback>CB</AvatarFallback>

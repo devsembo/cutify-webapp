@@ -6,7 +6,7 @@ const nextConfig = {
                 //protocol: 'http',
                 protocol: 'https',
                 //hostname: 'localhost',
-                hostname: 'cutify-api-sv8s.onrender.com',
+                hostname: 'https://cutify-api-g5dk.onrender.com',
                 pathname: '/image/**',
             },
         ],
