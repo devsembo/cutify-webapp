@@ -12,10 +12,10 @@ export default function UserGreeting() {
     <>
       <div className="mb-3 flex justify-between">
         {isAuthenticated ? (
-          <h2>
+          <p>
             Olá!{" "}
             <span className="text-xl font-semibold">{user?.nome || ""}</span>
-          </h2>
+          </p>
         ) : (
           ""
         )}

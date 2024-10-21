@@ -46,7 +46,9 @@ const SideBarSheet: React.FC<SideBarSheetProps> = ({ onClose }) => {
                   height={26}
                   className="rounded"
                 />
-                <AvatarFallback>C </AvatarFallback>
+                <AvatarFallback>
+                  {user?.nome ? user.nome[0].toUpperCase() : "C"}
+                </AvatarFallback>
               </Avatar>
               <div>
                 <p className="font-bold">{user?.nome || "Nome do Usuário"}</p>

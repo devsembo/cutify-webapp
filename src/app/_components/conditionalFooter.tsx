@@ -7,7 +7,11 @@ function ConditionalFooter() {
   const pathname = usePathname()
 
   // Não renderiza o Footer na página de login
-  if (pathname === "/login" || pathname === "/signup") {
+  if (
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/profile"
+  ) {
     return null
   }
 

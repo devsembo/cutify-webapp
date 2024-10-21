@@ -30,7 +30,7 @@ type UserProps = {
 
 type SignInProps = {
   emailNumber: string
-  password: string
+  senha: string
 }
 
 type SignUpProps = {
@@ -101,11 +101,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   )
 
   const signIn = useCallback(
-    async ({ emailNumber, password }: SignInProps) => {
+    async ({ emailNumber, senha }: SignInProps) => {
       try {
-        const response = await api.post("/session", { emailNumber, password })
+        const response = await api.post("/login", { emailNumber, senha })
         const { id, nome, telemovel, email, token, fotoPerfil } = response.data
-
         setCookie(undefined, "@cutifywebtoken.token", token, {
           maxAge: 60 * 60 * 24 * 30, // 30 days
           path: "/",
@@ -115,7 +114,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         api.defaults.headers["Authorization"] = `Bearer ${token}`
         router.push("/")
       } catch (error) {
-        toast.warning("Email ou senha inválidos!")
+        toast.error("Email ou senha inválidos!", {
+          className: "bg-red",
+        })
         console.error("Erro ao acessar:", error)
       }
     },

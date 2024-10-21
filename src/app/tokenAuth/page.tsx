@@ -56,7 +56,6 @@ export default function Login() {
       const response = await apiclient.post("/auth/token", {
         nome: values.token,
       })
-
       setAlertMessage(
         "Registo efetuado com sucesso, obrigado! enviamos um código de validção para seu telemovel.",
       )

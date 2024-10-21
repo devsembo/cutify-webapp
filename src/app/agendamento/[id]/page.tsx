@@ -475,7 +475,7 @@ export default function AgendamentoPage() {
                 <Button
                   className="w-56 rounded-3xl bg-fuchsia-700 uppercase text-white"
                   onClick={handleAppointment}
-                  disabled={!selectedDay || !selectedTime}
+                  disabled={!selectedTime}
                 >
                   Agendar
                 </Button>

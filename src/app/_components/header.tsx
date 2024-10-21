@@ -53,20 +53,14 @@ export default function Header() {
                   className="h-[28px] w-24 text-xs"
                   onClick={handleSignIn}
                 >
-                  iniciar sessão
-                </Button>
-                <Button
-                  className="h-[28px] w-16 text-xs"
-                  onClick={handleSignUp}
-                >
-                  Registar
+                  Iniciar sessão
                 </Button>
               </div>
             )}
             {token && (
-              <Badge className="h-7">
+              <Button className="h-7 rounded-3xl">
                 <Link href={"/profile"}>{user?.nome}</Link>
-              </Badge>
+              </Button>
             )}
 
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
