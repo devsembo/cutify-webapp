@@ -1,44 +1,39 @@
 "use client"
 import { Avatar, AvatarFallback, AvatarImage } from "../_components/ui/avatar"
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect } from "react"
 import { AuthContext } from "@/contexts/AuthContext"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { Button } from "../_components/ui/button"
 import { Card, CardContent, CardHeader } from "../_components/ui/card"
 import {
-  ArrowBigRight,
   ArrowRight,
   BellRing,
   Calendar,
   ChevronLeftIcon,
   HelpCircle,
   LogOut,
-  MenuIcon,
 } from "lucide-react"
 import { Badge } from "../_components/ui/badge"
-import Header from "../_components/header"
 
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/app/_components/ui/sheet"
-import SideBarSheet from "../_components/sidebar-sheet"
 import Link from "next/link"
 
 export default function Profile() {
-  const { isAuthenticated, user } = useContext(AuthContext)
+  const { isAuthenticated, user, signOut } = useContext(AuthContext)
   const router = useRouter()
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
 
-  const closeSheet = () => {
-    setIsSheetOpen(false)
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/")
+    }
+  }, [isAuthenticated, router])
 
-  if (!isAuthenticated) {
-    redirect("/login")
+  async function handleSignout() {
+    try {
+      await signOut()
+      await router.push("/")
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error)
+    }
   }
 
   return (
@@ -141,7 +136,7 @@ export default function Profile() {
                       <ArrowRight size={20} color="gray" />
                     </div>
                     <div className="mt-1 flex w-full justify-between pb-4">
-                      <div className="flex gap-4 px-2">
+                      <div className="flex gap-4 px-2" onClick={handleSignout}>
                         <LogOut className="mt-[2px]" color="red" />
                         <p className="mt-1 text-[12px] text-red-500">
                           Terminar sessão

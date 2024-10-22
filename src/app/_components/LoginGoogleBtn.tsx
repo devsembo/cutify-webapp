@@ -42,8 +42,7 @@ function GoogleLoginButton() {
 
         api.defaults.headers["Authorization"] = `Bearer ${token}`
 
-        const returnUrl = searchParams.get("returnUrl") || "/"
-        router.push(returnUrl)
+        router.push("edit_profile")
       } catch (error) {
         console.error("Erro no login:", error)
       } finally {

@@ -10,7 +10,8 @@ function ConditionalFooter() {
   if (
     pathname === "/login" ||
     pathname === "/signup" ||
-    pathname === "/profile"
+    pathname === "/profile" ||
+    pathname === "/edit_profile"
   ) {
     return null
   }

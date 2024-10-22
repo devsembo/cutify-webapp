@@ -101,7 +101,7 @@ export default async function Home() {
         </div>
         */}
         <div className="flex h-full w-full flex-col bg-black py-4">
-          <h4 className="ml-1 p-2 text-sm font-bold uppercase text-gray-400">
+          <h4 className="mb-3 ml-1 p-2 text-sm font-bold uppercase text-gray-400">
             SUGESTÕES
           </h4>
 

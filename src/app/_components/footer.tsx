@@ -20,7 +20,7 @@ function Footer() {
             <Link href={"help_center"} className="font-light">
               Visitar o nosso Centro de Ajuda
             </Link>
-            <Link href={"help_center"} className="font-light">
+            <Link href={"/Our_services"} className="mt-[-18px] font-light">
               Como funciona as aplicações da CUTIFY
             </Link>
             <Link
@@ -44,14 +44,8 @@ function Footer() {
                   <Link href={"/newsroom"}>
                     <li className="text-xs">Newsroom</li>
                   </Link>
-                  <Link href={"/investors"}>
-                    <li className="text-xs">Investidores</li>
-                  </Link>
-                  <Link href={"/blog"}>
-                    <li className="text-xs">Blogue</li>
-                  </Link>
                   <Link href={"/carrers"}>
-                    <li className="text-xs">carreiras</li>
+                    <li className="text-xs">Junta-te a nós</li>
                   </Link>
                 </ul>
               </div>
