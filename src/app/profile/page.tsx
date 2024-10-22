@@ -12,6 +12,7 @@ import {
   Calendar,
   ChevronLeftIcon,
   HelpCircle,
+  LogOut,
   MenuIcon,
 } from "lucide-react"
 import { Badge } from "../_components/ui/badge"
@@ -25,6 +26,7 @@ import {
   SheetTrigger,
 } from "@/app/_components/ui/sheet"
 import SideBarSheet from "../_components/sidebar-sheet"
+import Link from "next/link"
 
 export default function Profile() {
   const { isAuthenticated, user } = useContext(AuthContext)
@@ -51,7 +53,7 @@ export default function Profile() {
         <ChevronLeftIcon />
       </Button>
 
-      <div className="flex h-screen flex-col items-center gap-4 py-24">
+      <div className="flex flex-col items-center gap-4 py-10">
         <div className="flex h-2 flex-col items-center gap-2">
           <Avatar className="h-20 w-20">
             <AvatarImage
@@ -66,10 +68,12 @@ export default function Profile() {
             {user?.email}
           </p>
 
-          <Button className="mt-4 rounded-3xl">Editar perfil</Button>
+          <Button className="mt-4 rounded-3xl" asChild>
+            <Link href={"/edit_profile"}>Editar perfil</Link>
+          </Button>
 
           <div className="flex flex-col gap-1">
-            <div className="mt-16 flex w-96 flex-col gap-4">
+            <div className="mt-16 flex w-80 flex-col gap-4">
               <p className="ml-1 text-gray-500">Atividade</p>
               <Card>
                 <CardContent className="flex h-32 flex-col gap-3 bg-gray-900 p-2">
@@ -99,53 +103,54 @@ export default function Profile() {
                 </CardContent>
               </Card>
             </div>
+          </div>
+          <div>
+            <div className="flex flex-col gap-1">
+              <div className="mt-5 flex w-80 flex-col gap-4">
+                <p className="ml-1 text-gray-500">Preferência</p>
+                <Card>
+                  <CardContent className="flex h-64 flex-col gap-3 bg-gray-900 p-2">
+                    <div className="mt-3 flex w-full justify-between border-b-2 pb-4">
+                      <div className="flex gap-4 px-2">
+                        <BellRing />
+                        <p className="mt-1 text-[12px] text-gray-400">
+                          Anúncios e novidades
+                        </p>
+                      </div>
 
-            <div className="mt-5 flex w-96 flex-col gap-4">
-              <p className="ml-1 text-gray-500">Atividade</p>
-              <Card>
-                <CardContent className="flex h-64 flex-col gap-3 bg-gray-900 p-2">
-                  <div className="mt-3 flex w-full justify-between border-b-2 pb-4">
-                    <div className="flex gap-4 px-2">
-                      <BellRing />
-                      <p className="mt-1 text-[12px] text-gray-400">
-                        Notificações
-                      </p>
+                      <ArrowRight size={20} color="gray" />
                     </div>
+                    <div className="mt-3 flex w-full justify-between border-b-2 pb-4">
+                      <div className="flex gap-4 px-2">
+                        <HelpCircle className="mt-[2px]" />
+                        <p className="mt-1 text-[12px] text-gray-400">
+                          Temos e politica de privacidade
+                        </p>
+                      </div>
 
-                    <ArrowRight size={20} color="gray" />
-                  </div>
-                  <div className="mt-3 flex w-full justify-between border-b-2 pb-4">
-                    <div className="flex gap-4 px-2">
-                      <HelpCircle className="mt-[2px]" />
-                      <p className="mt-1 text-[12px] text-gray-400">
-                        Temos e politica de privacidade
-                      </p>
+                      <ArrowRight size={20} color="gray" />
                     </div>
+                    <div className="mt-3 flex w-full justify-between border-b-2 pb-4">
+                      <div className="flex gap-4 px-2">
+                        <HelpCircle className="mt-[2px]" />
+                        <p className="mt-1 text-[12px] text-gray-400">
+                          Ajuda e suporte
+                        </p>
+                      </div>
 
-                    <ArrowRight size={20} color="gray" />
-                  </div>
-                  <div className="mt-3 flex w-full justify-between border-b-2 pb-4">
-                    <div className="flex gap-4 px-2">
-                      <HelpCircle className="mt-[2px]" />
-                      <p className="mt-1 text-[12px] text-gray-400">
-                        Ajuda e suporte
-                      </p>
+                      <ArrowRight size={20} color="gray" />
                     </div>
-
-                    <ArrowRight size={20} color="gray" />
-                  </div>
-                  <div className="mt-1 flex w-full justify-between pb-4">
-                    <div className="flex gap-4 px-2">
-                      <HelpCircle className="mt-[2px]" />
-                      <p className="mt-1 text-[12px] text-gray-400">
-                        Ajuda e suporte
-                      </p>
+                    <div className="mt-1 flex w-full justify-between pb-4">
+                      <div className="flex gap-4 px-2">
+                        <LogOut className="mt-[2px]" color="red" />
+                        <p className="mt-1 text-[12px] text-red-500">
+                          Terminar sessão
+                        </p>
+                      </div>
                     </div>
-
-                    <ArrowRight size={20} color="gray" />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
