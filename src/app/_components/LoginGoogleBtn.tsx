@@ -7,15 +7,13 @@ import { setupAPIClient } from "@/services/api"
 import { api } from "@/services/apiClient"
 import { Button } from "../_components/ui/button"
 import Image from "next/image"
-import { redirect, useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { AuthContext } from "@/contexts/AuthContext" // Ajuste o caminho conforme necessário
 
 function GoogleLoginButton() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-
-  const searchParams = useSearchParams()
-  const { setUser, user } = useContext(AuthContext)
+  const { setUser } = useContext(AuthContext)
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -26,13 +24,16 @@ function GoogleLoginButton() {
           token: tokenResponse.access_token,
         })
 
-        const { id, nome, email, telemovel, token, fotoPerfil } = response.data
+        const { id, nome, email, telemovel, token, fotoPerfil, isMissingInfo } =
+          response.data
 
+        // Armazenar o token no cookie
         setCookie(undefined, "@cutifywebtoken.token", token, {
-          maxAge: 60 * 60 * 24 * 30, // 30 days
+          maxAge: 60 * 60 * 24 * 30, // 30 dias
           path: "/",
         })
 
+        // Definir o usuário no contexto global
         setUser({
           id,
           nome,
@@ -41,12 +42,15 @@ function GoogleLoginButton() {
           fotoPerfil,
         })
 
+        // Definir o token no cabeçalho da API
         api.defaults.headers["Authorization"] = `Bearer ${token}`
 
-        if (user?.telemovel === "") {
-          router.push("/edit_profile")
+        // Verificar se estão faltando informações
+        if (isMissingInfo) {
+          router.push("/edit_profile") // Redireciona para a página de edição de perfil
+        } else {
+          router.push("/") // Redireciona para a home se todas as informações estiverem preenchidas
         }
-        router.push("/")
       } catch (error) {
         console.error("Erro no login:", error)
       } finally {
@@ -54,7 +58,7 @@ function GoogleLoginButton() {
       }
     },
     onError: () => {
-      console.log("Login Failed")
+      console.log("Login Falhou")
     },
   })
 

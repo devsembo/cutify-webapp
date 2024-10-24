@@ -60,7 +60,7 @@ const formSchema = z.object({
 })
 
 export default function Edit_Profile() {
-  const { isAuthenticated, user, signOut } = useContext(AuthContext)
+  const { isAuthenticated, user } = useContext(AuthContext)
   type FormValues = z.infer<typeof formSchema>
   const [avatarUrl, setAvatarUrl] = useState(
     user?.fotoPerfil
@@ -86,7 +86,11 @@ export default function Edit_Profile() {
     if (!isAuthenticated) {
       router.push("/")
     }
-  }, [isAuthenticated, router])
+
+    if (user?.telemovel) {
+      router.push("/")
+    }
+  }, [isAuthenticated, user, router])
 
   function handleUploadClick() {
     if (fileInputRef.current) {
@@ -137,7 +141,8 @@ export default function Edit_Profile() {
     const apiclient = setupAPIClient()
 
     try {
-      const response = await apiclient.post("/users", {
+      const response = await apiclient.put("/user/infoupdt", {
+        user_id: user?.id,
         senha: values.senha,
         telemovel: values.telemovel,
       })
@@ -145,7 +150,7 @@ export default function Edit_Profile() {
         "Registo efetuado com sucesso, obrigado! enviamos um código de validção para seu telemovel.",
       )
       setIsSuccess(true)
-      router.push("/tokenAuth")
+      router.push("/")
     } catch (error) {
       console.error(error)
       setAlertMessage("Erro ao efetuar o registo. Por favor, tente novamente.")
@@ -169,7 +174,7 @@ export default function Edit_Profile() {
       <div className="flex flex-col items-center gap-4 py-10">
         <div className="flex h-2 flex-col items-center gap-2">
           <Avatar className="h-20 w-20">
-            <AvatarImage src={avatarUrl} />
+            <AvatarImage src={user?.fotoPerfil} />
             <AvatarFallback className="text-6xl">
               {user?.nome ? user.nome[0].toUpperCase() : "C"}
             </AvatarFallback>
@@ -199,7 +204,7 @@ export default function Edit_Profile() {
           </div>
           <div className="flex flex-col gap-1">
             <div className="mt-16 flex w-80 flex-col gap-4">
-              <p className="text-white-500 ml-1 flex justify-center">
+              <p className="ml-1 flex justify-center text-gray-500">
                 Os meus dados
               </p>
               <Form {...form}>
@@ -207,8 +212,11 @@ export default function Edit_Profile() {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="w-80 space-y-2"
                 >
+                  <FormLabel>Nome</FormLabel>
                   <Input placeholder={user?.nome} disabled />
+                  <FormLabel>Email</FormLabel>
                   <Input type="email" placeholder={user?.email} disabled />
+
                   <FormField
                     control={form.control}
                     name="senha"
@@ -218,7 +226,8 @@ export default function Edit_Profile() {
                         <FormControl>
                           <Input
                             type="password"
-                            placeholder="A sua palavra-passe"
+                            placeholder="********" // Placeholder com pontos
+                            disabled // Campo desabilitado
                             {...field}
                           />
                         </FormControl>
@@ -226,6 +235,7 @@ export default function Edit_Profile() {
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="telemovel"
@@ -234,7 +244,9 @@ export default function Edit_Profile() {
                         <FormLabel>Telemóvel</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder={user?.telemovel || "o seu telemovel"}
+                            type="text"
+                            placeholder={user?.telemovel || "O seu telemóvel"}
+                            disabled
                             {...field}
                           />
                         </FormControl>
@@ -242,6 +254,7 @@ export default function Edit_Profile() {
                       </FormItem>
                     )}
                   />
+
                   <div className="flex flex-col items-center">
                     <Button type="submit">Atualizar dados</Button>
                   </div>
