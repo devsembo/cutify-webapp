@@ -50,10 +50,6 @@ import { Input } from "../_components/ui/input"
 import { setupAPIClient } from "@/services/api"
 
 const formSchema = z.object({
-  senha: z
-    .string()
-    .min(6, { message: "A senha deve conter pelo menos 8 caracteres" })
-    .max(50),
   telemovel: z.string().regex(/^[0-9]{9}$/, {
     message: "O número de telemóvel deve ter 9 dígitos.",
   }),
@@ -76,7 +72,6 @@ export default function Edit_Profile() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      senha: "",
       telemovel: "",
     },
   })
@@ -143,7 +138,6 @@ export default function Edit_Profile() {
     try {
       const response = await apiclient.put("/user/infoupdt", {
         user_id: user?.id,
-        senha: values.senha,
         telemovel: values.telemovel,
       })
       setAlertMessage(
@@ -219,25 +213,6 @@ export default function Edit_Profile() {
 
                   <FormField
                     control={form.control}
-                    name="senha"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Senha</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="********" // Placeholder com pontos
-                            disabled // Campo desabilitado
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
                     name="telemovel"
                     render={({ field }) => (
                       <FormItem>
@@ -245,8 +220,11 @@ export default function Edit_Profile() {
                         <FormControl>
                           <Input
                             type="text"
-                            placeholder={user?.telemovel || "O seu telemóvel"}
-                            disabled
+                            placeholder={
+                              user?.telemovel ||
+                              "Digite seu número de telemóvel"
+                            }
+                            disabled={!!user?.telemovel}
                             {...field}
                           />
                         </FormControl>
