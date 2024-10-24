@@ -7,14 +7,15 @@ import { setupAPIClient } from "@/services/api"
 import { api } from "@/services/apiClient"
 import { Button } from "../_components/ui/button"
 import Image from "next/image"
-import { useRouter, useSearchParams } from "next/navigation"
+import { redirect, useRouter, useSearchParams } from "next/navigation"
 import { AuthContext } from "@/contexts/AuthContext" // Ajuste o caminho conforme necessário
 
 function GoogleLoginButton() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+
   const searchParams = useSearchParams()
-  const { setUser } = useContext(AuthContext)
+  const { setUser, user } = useContext(AuthContext)
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -42,7 +43,10 @@ function GoogleLoginButton() {
 
         api.defaults.headers["Authorization"] = `Bearer ${token}`
 
-        router.push("edit_profile")
+        if (user?.telemovel === "") {
+          router.push("/edit_profile")
+        }
+        router.push("/")
       } catch (error) {
         console.error("Erro no login:", error)
       } finally {
